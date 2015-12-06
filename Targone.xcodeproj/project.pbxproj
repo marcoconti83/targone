@@ -1,0 +1,443 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		547C23341C1112BE005A7175 /* ArgumentStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547C232F1C111255005A7175 /* ArgumentStyleTests.swift */; };
+		54BEF8391C0B62A400FFE5FB /* Targone.h in Headers */ = {isa = PBXBuildFile; fileRef = 54BEF8381C0B62A400FFE5FB /* Targone.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		54BEF8401C0B62A400FFE5FB /* Targone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54BEF8351C0B62A400FFE5FB /* Targone.framework */; };
+		54BEF8451C0B62A400FFE5FB /* CommandLineArgumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BEF8441C0B62A400FFE5FB /* CommandLineArgumentTests.swift */; };
+		54BEF8501C0B62F500FFE5FB /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BEF84F1C0B62F500FFE5FB /* ArgumentParser.swift */; };
+		54BEF8521C0B70BB00FFE5FB /* CommandLineArgument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BEF8511C0B70BB00FFE5FB /* CommandLineArgument.swift */; };
+		54C728B61C124182007E317A /* InitializableFromStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C728B51C124182007E317A /* InitializableFromStringTests.swift */; };
+		54C728B81C1245A7007E317A /* ParsingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C728B71C1245A7007E317A /* ParsingResult.swift */; };
+		54C728BA1C12463A007E317A /* ParsingResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C728B91C12463A007E317A /* ParsingResultTests.swift */; };
+		54E8FD041C0C3D73007380EB /* String+CommandLineArgument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8FD031C0C3D73007380EB /* String+CommandLineArgument.swift */; };
+		54E8FD061C0C3DA6007380EB /* String+CommandLineArgumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8FD051C0C3DA6007380EB /* String+CommandLineArgumentTests.swift */; };
+		54E8FD081C0C4E0B007380EB /* ArgumentParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8FD071C0C4E0B007380EB /* ArgumentParserTests.swift */; };
+		54E8FD0A1C0C6689007380EB /* InitializableFromString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E8FD091C0C6689007380EB /* InitializableFromString.swift */; };
+		54FB01431C110A92001504D6 /* ArgumentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FB01421C110A92001504D6 /* ArgumentStyle.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		54BEF8411C0B62A400FFE5FB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 54BEF82C1C0B62A400FFE5FB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 54BEF8341C0B62A400FFE5FB;
+			remoteInfo = Lettore;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		547C232F1C111255005A7175 /* ArgumentStyleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentStyleTests.swift; sourceTree = "<group>"; };
+		54BEF8351C0B62A400FFE5FB /* Targone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Targone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		54BEF8381C0B62A400FFE5FB /* Targone.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targone.h; sourceTree = "<group>"; };
+		54BEF83A1C0B62A400FFE5FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54BEF83F1C0B62A400FFE5FB /* TargoneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TargoneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		54BEF8441C0B62A400FFE5FB /* CommandLineArgumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgumentTests.swift; sourceTree = "<group>"; };
+		54BEF8461C0B62A400FFE5FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		54BEF84F1C0B62F500FFE5FB /* ArgumentParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
+		54BEF8511C0B70BB00FFE5FB /* CommandLineArgument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandLineArgument.swift; sourceTree = "<group>"; };
+		54C728B51C124182007E317A /* InitializableFromStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitializableFromStringTests.swift; sourceTree = "<group>"; };
+		54C728B71C1245A7007E317A /* ParsingResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingResult.swift; sourceTree = "<group>"; };
+		54C728B91C12463A007E317A /* ParsingResultTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsingResultTests.swift; sourceTree = "<group>"; };
+		54E8FD031C0C3D73007380EB /* String+CommandLineArgument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CommandLineArgument.swift"; sourceTree = "<group>"; };
+		54E8FD051C0C3DA6007380EB /* String+CommandLineArgumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+CommandLineArgumentTests.swift"; sourceTree = "<group>"; };
+		54E8FD071C0C4E0B007380EB /* ArgumentParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentParserTests.swift; sourceTree = "<group>"; };
+		54E8FD091C0C6689007380EB /* InitializableFromString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitializableFromString.swift; sourceTree = "<group>"; };
+		54FB01421C110A92001504D6 /* ArgumentStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentStyle.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		54BEF8311C0B62A400FFE5FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54BEF83C1C0B62A400FFE5FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54BEF8401C0B62A400FFE5FB /* Targone.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		54BEF82B1C0B62A400FFE5FB = {
+			isa = PBXGroup;
+			children = (
+				54BEF8371C0B62A400FFE5FB /* Source */,
+				54BEF8431C0B62A400FFE5FB /* Tests */,
+				54BEF8361C0B62A400FFE5FB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		54BEF8361C0B62A400FFE5FB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				54BEF8351C0B62A400FFE5FB /* Targone.framework */,
+				54BEF83F1C0B62A400FFE5FB /* TargoneTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		54BEF8371C0B62A400FFE5FB /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				54BEF8381C0B62A400FFE5FB /* Targone.h */,
+				54BEF84F1C0B62F500FFE5FB /* ArgumentParser.swift */,
+				54FB01421C110A92001504D6 /* ArgumentStyle.swift */,
+				54BEF8511C0B70BB00FFE5FB /* CommandLineArgument.swift */,
+				54E8FD031C0C3D73007380EB /* String+CommandLineArgument.swift */,
+				54E8FD091C0C6689007380EB /* InitializableFromString.swift */,
+				54C728B71C1245A7007E317A /* ParsingResult.swift */,
+				54BEF83A1C0B62A400FFE5FB /* Info.plist */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		54BEF8431C0B62A400FFE5FB /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				54E8FD071C0C4E0B007380EB /* ArgumentParserTests.swift */,
+				547C232F1C111255005A7175 /* ArgumentStyleTests.swift */,
+				54BEF8441C0B62A400FFE5FB /* CommandLineArgumentTests.swift */,
+				54E8FD051C0C3DA6007380EB /* String+CommandLineArgumentTests.swift */,
+				54C728B51C124182007E317A /* InitializableFromStringTests.swift */,
+				54C728B91C12463A007E317A /* ParsingResultTests.swift */,
+				54BEF8461C0B62A400FFE5FB /* Info.plist */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		54BEF8321C0B62A400FFE5FB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54BEF8391C0B62A400FFE5FB /* Targone.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		54BEF8341C0B62A400FFE5FB /* Targone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 54BEF8491C0B62A400FFE5FB /* Build configuration list for PBXNativeTarget "Targone" */;
+			buildPhases = (
+				54BEF8301C0B62A400FFE5FB /* Sources */,
+				54BEF8311C0B62A400FFE5FB /* Frameworks */,
+				54BEF8321C0B62A400FFE5FB /* Headers */,
+				54BEF8331C0B62A400FFE5FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Targone;
+			productName = Lettore;
+			productReference = 54BEF8351C0B62A400FFE5FB /* Targone.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		54BEF83E1C0B62A400FFE5FB /* TargoneTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 54BEF84C1C0B62A400FFE5FB /* Build configuration list for PBXNativeTarget "TargoneTests" */;
+			buildPhases = (
+				54BEF83B1C0B62A400FFE5FB /* Sources */,
+				54BEF83C1C0B62A400FFE5FB /* Frameworks */,
+				54BEF83D1C0B62A400FFE5FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				54BEF8421C0B62A400FFE5FB /* PBXTargetDependency */,
+			);
+			name = TargoneTests;
+			productName = LettoreTests;
+			productReference = 54BEF83F1C0B62A400FFE5FB /* TargoneTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		54BEF82C1C0B62A400FFE5FB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0710;
+				LastUpgradeCheck = 0710;
+				ORGANIZATIONNAME = Marco;
+				TargetAttributes = {
+					54BEF8341C0B62A400FFE5FB = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+					54BEF83E1C0B62A400FFE5FB = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 54BEF82F1C0B62A400FFE5FB /* Build configuration list for PBXProject "Targone" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 54BEF82B1C0B62A400FFE5FB;
+			productRefGroup = 54BEF8361C0B62A400FFE5FB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				54BEF8341C0B62A400FFE5FB /* Targone */,
+				54BEF83E1C0B62A400FFE5FB /* TargoneTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		54BEF8331C0B62A400FFE5FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54BEF83D1C0B62A400FFE5FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		54BEF8301C0B62A400FFE5FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54E8FD0A1C0C6689007380EB /* InitializableFromString.swift in Sources */,
+				54BEF8521C0B70BB00FFE5FB /* CommandLineArgument.swift in Sources */,
+				54BEF8501C0B62F500FFE5FB /* ArgumentParser.swift in Sources */,
+				54FB01431C110A92001504D6 /* ArgumentStyle.swift in Sources */,
+				54E8FD041C0C3D73007380EB /* String+CommandLineArgument.swift in Sources */,
+				54C728B81C1245A7007E317A /* ParsingResult.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		54BEF83B1C0B62A400FFE5FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54E8FD081C0C4E0B007380EB /* ArgumentParserTests.swift in Sources */,
+				54E8FD061C0C3DA6007380EB /* String+CommandLineArgumentTests.swift in Sources */,
+				547C23341C1112BE005A7175 /* ArgumentStyleTests.swift in Sources */,
+				54BEF8451C0B62A400FFE5FB /* CommandLineArgumentTests.swift in Sources */,
+				54C728B61C124182007E317A /* InitializableFromStringTests.swift in Sources */,
+				54C728BA1C12463A007E317A /* ParsingResultTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		54BEF8421C0B62A400FFE5FB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 54BEF8341C0B62A400FFE5FB /* Targone */;
+			targetProxy = 54BEF8411C0B62A400FFE5FB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		54BEF8471C0B62A400FFE5FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		54BEF8481C0B62A400FFE5FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		54BEF84A1C0B62A400FFE5FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Source/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Lettore;
+				PRODUCT_NAME = Targone;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		54BEF84B1C0B62A400FFE5FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Source/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Lettore;
+				PRODUCT_NAME = Targone;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		54BEF84D1C0B62A400FFE5FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.LettoreTests;
+				PRODUCT_NAME = TargoneTests;
+			};
+			name = Debug;
+		};
+		54BEF84E1C0B62A400FFE5FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.LettoreTests;
+				PRODUCT_NAME = TargoneTests;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		54BEF82F1C0B62A400FFE5FB /* Build configuration list for PBXProject "Targone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54BEF8471C0B62A400FFE5FB /* Debug */,
+				54BEF8481C0B62A400FFE5FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		54BEF8491C0B62A400FFE5FB /* Build configuration list for PBXNativeTarget "Targone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54BEF84A1C0B62A400FFE5FB /* Debug */,
+				54BEF84B1C0B62A400FFE5FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		54BEF84C1C0B62A400FFE5FB /* Build configuration list for PBXNativeTarget "TargoneTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				54BEF84D1C0B62A400FFE5FB /* Debug */,
+				54BEF84E1C0B62A400FFE5FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 54BEF82C1C0B62A400FFE5FB /* Project object */;
+}
