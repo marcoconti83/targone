@@ -75,7 +75,7 @@
 		54BEF82B1C0B62A400FFE5FB = {
 			isa = PBXGroup;
 			children = (
-				54BEF8371C0B62A400FFE5FB /* Source */,
+				54BEF8371C0B62A400FFE5FB /* Sources */,
 				54BEF8431C0B62A400FFE5FB /* Tests */,
 				54BEF8361C0B62A400FFE5FB /* Products */,
 			);
@@ -90,7 +90,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		54BEF8371C0B62A400FFE5FB /* Source */ = {
+		54BEF8371C0B62A400FFE5FB /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				54BEF8381C0B62A400FFE5FB /* Targone.h */,
@@ -102,7 +102,7 @@
 				54C728B71C1245A7007E317A /* ParsingResult.swift */,
 				54BEF83A1C0B62A400FFE5FB /* Info.plist */,
 			);
-			path = Source;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		54BEF8431C0B62A400FFE5FB /* Tests */ = {
@@ -353,13 +353,13 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 0.1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Source/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Lettore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Targone;
 				PRODUCT_NAME = Targone;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -373,13 +373,13 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 0.1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Source/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Sources/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Lettore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marco83.Targone;
 				PRODUCT_NAME = Targone;
 				SKIP_INSTALL = YES;
 			};
