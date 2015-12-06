@@ -1,3 +1,4 @@
+![Pisa gioco del ponte](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Pisa_GiocoPonte_29061935.jpg/800px-Pisa_GiocoPonte_29061935.jpg)
 # Targone
 
 Targone is a command line argument parser for Swift scripts, inspired by [Python argparse](https://docs.python.org/2/library/argparse.html). It allows script authors to easily define what kind of arguments are expected, whether they are optional, positional or flags, and automatically generate usage description.
