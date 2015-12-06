@@ -3,9 +3,9 @@
 
 Targone is a command line argument parser for Swift scripts, inspired by [Python argparse](https://docs.python.org/2/library/argparse.html). It allows script authors to easily define what kind of arguments are expected, whether they are optional, positional or flags, and automatically generate usage description.
 
-Its public API is designed with ease of use within a script. To achieve this, most classes have two ways of being initialized, one with explicit argument names and error reporting (throws), and a simplified version that doesn't require the fist label and that does not throw but asserts instead.
+Its public API is designed keeping in mind ease of use within a script. To achieve this, most classes have two ways of being initialized, one with explicit argument names and error reporting (Swift `throws`), and one simplified version that doesn't require the fist label and that does not throw but asserts instead.
 
-The code and the tests are documented.
+The API is documented in the code and tests.
 
 A simple example Swift script usage can be found in the [Example](https://github.com/marcoconti83/targone/tree/master/Examples) folder.
 
