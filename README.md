@@ -1,5 +1,4 @@
 # Targone
----------------------
 
 Targone is a command line argument parser for Swift scripts, inspired by [Python argparse](https://docs.python.org/2/library/argparse.html). It allows script authors to easily define what kind of arguments are expected, whether they are optional, positional or flags, and automatically generate usage description.
 
@@ -7,7 +6,7 @@ Its public API is designed with ease of use within a script. To achieve this, mo
 
 The code and the tests are documented.
 
-A simple example Swift script usage can be found in the Example folder.
+A simple example Swift script usage can be found in the [Example](https://github.com/marcoconti83/targone/tree/master/Examples) folder.
 
 ## How to use Targone in your script
 
@@ -30,7 +29,7 @@ you would be able to run any swift file with
 
 ```swift -F Carthage/Build/Mac```
 
-The `-F` flag can also be included in the [shebang](https://en.wikipedia.org/wiki/Shebang_%28Unix%29) line of the script, so that you can just invoke the script directly (e.g. ```$> do.swift```). This is the approach used in the examples included with this project.
+The `-F` flag can also be included in the [shebang](https://en.wikipedia.org/wiki/Shebang_%28Unix%29) line of the script, so that you can just invoke the script directly (e.g. ```$> do.swift```). This is the approach used in the [examples](https://github.com/marcoconti83/targone/tree/master/Examples) included with this project.
 
 ### Without Carthage
-You can download the framework binary from the GitHub latest release
+You can download the framework binary from the GitHub [latest release](https://github.com/marcoconti83/targone/releases/latest)
