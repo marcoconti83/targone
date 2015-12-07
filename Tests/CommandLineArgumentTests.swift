@@ -227,7 +227,7 @@ extension CommandLineArgumentTests {
     func testExpectedFlagDescription() {
         do {
             let sut = FlagArgument("--boo", shortLabel: "-b", help: "help help")
-            XCTAssertEqual(sut.description, "--boo, -b           help help")
+            XCTAssertEqual(sut.description, "--boo, -b                     help help")
         }
         do {
             let sut = FlagArgument("--boo")
@@ -239,11 +239,11 @@ extension CommandLineArgumentTests {
         
         do {
             let sut = OptionalArgument<Int>("--boo", shortLabel: "-b", help: "help help")
-            XCTAssertEqual(sut.description, "--boo, -b BOO       help help")
+            XCTAssertEqual(sut.description, "--boo, -b BOO<Int>            help help")
         }
         do {
             let sut = OptionalArgument<Int>("--boo")
-            XCTAssertEqual(sut.description, "--boo BOO")
+            XCTAssertEqual(sut.description, "--boo BOO<Int>")
         }
     }
 
@@ -251,11 +251,11 @@ extension CommandLineArgumentTests {
         
         do {
             let sut = PositionalArgument<Int>("foo", help: "help help")
-            XCTAssertEqual(sut.description, "foo                 help help")
+            XCTAssertEqual(sut.description, "foo<Int>                      help help")
         }
         do {
             let sut = PositionalArgument<Int>("foo")
-            XCTAssertEqual(sut.description, "foo")
+            XCTAssertEqual(sut.description, "foo<Int>")
         }
     }
     
@@ -280,7 +280,7 @@ extension CommandLineArgumentTests {
         let label = "--foooooooooooooooooooooooooooooooooooo"
         let help = "foo"
         let sut = OptionalArgument<Int>(label, help: help)
-        let expected = "\(label) \(label.placeholderArgumentString()) \(help)"
+        let expected = "\(label) \(label.placeholderArgumentString())<Int> \(help)"
         
         // when
         let description = sut.description

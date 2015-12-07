@@ -25,7 +25,7 @@
 import Foundation
 
 /// Padding used in output for first column
-private let OutputFirstColumnPadding = 20
+private let OutputFirstColumnPadding = 30
 
 
 /// Errors in initializing arguments
@@ -152,12 +152,34 @@ extension CommandLineArgument {
 // MARK: - String representation
 
 extension CommandLineArgument : CustomStringConvertible {
+
+    /// Returns the type specification needed for the given type
+    private func placeholderArgumentDescription() -> String {
+        if self.style.requiresAdditionalValue() {
+            return " "+self.label.placeholderArgumentString()
+        }
+        return ""
+    }
+    
+    /// Returns the type specifications according to the expected type (none for String, <Type> for any other)
+    private func typeSpecificationDescription() -> String {
+        if self.expectedType == String.self || !self.style.requiresValue() {
+            return ""
+        }
+        return "<\(self.expectedType)>"
+    }
+
+    /// Returns the argument and the expected value placeholder, if any
+    var compactLabelWithExpectedValue : String {
+        return self.compactLabel + self.placeholderArgumentDescription() + self.typeSpecificationDescription()
+    }
     
     public var description : String {
         
+        let placeholderArgument = self.placeholderArgumentDescription() + self.typeSpecificationDescription()
         let firstColumn = "\(label)" +
             (self.shortLabel != nil ? ", "+shortLabel! : "" ) +
-            (self.style.requiresAdditionalValue() ? " "+self.label.placeholderArgumentString() : "")
+            placeholderArgument
         let secondColumn = self.help
         
         let needsPadding = firstColumn.characters.count < OutputFirstColumnPadding
