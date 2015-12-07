@@ -9,9 +9,34 @@ The API is documented in the code and tests.
 
 A simple example Swift script usage can be found in the [Example](https://github.com/marcoconti83/targone/tree/master/Examples) folder.
 
+## Examples
+
+Prints an error when command line arguments are missing or not matching type
+```
+$> Examples/echo.swift
+usage: echo.swift [-h] [-n NUM<Int>] [--quotes] text
+echo.swift: error: too few arguments
+```
+
+Automatically generates and prints help
+```
+$> Examples/echo.swift --help
+usage: echo.swift [-h] [-n NUM<Int>] [--quotes] text
+
+Echoes some text on stdin
+
+positional arguments:
+	text
+
+optional arguments:
+	--help, -h                    show this help message and exit
+	--num, -n NUM<Int>            How many times to print
+	--quotes                      Whether to enclose text in quotes
+```
+
 ## How to use Targone in your script
 
-```import Targone```
+Just add ```import Targone``` to your script
 
 In order to be able to import it, you need to have the `Targone.framework` in the Swift search path. You can achieve this by compiling it yourself or downloading a binary version from a release, and then invoking Swift with the `-F` argument, pointing to the folder where Targone is stored.
 
