@@ -32,13 +32,13 @@ import Targone
 var parser = ArgumentParser(summary: "Echoes some text on stdin")
 
 // Method 1: add and retrieve final value by argument
-let repetitionsArg = OptionalArgument<Int>("num", shortLabel: "n", defaultValue: 1)
+let repetitionsArg = OptionalArgument<Int>("num", shortLabel: "n", defaultValue: 1, help: "how many times to print the text")
 parser.addArgument(repetitionsArg) 
 let textArg = PositionalArgument<String>("text")
 parser.addArgument(textArg)
 
 // Method 2: add and retrieve final value by label
-parser.addArgument(FlagArgument("quotes"))
+parser.addArgument(FlagArgument("quotes", help: "enclode text within quotes"))
 
 // Parse
 let args = parser.parse()
