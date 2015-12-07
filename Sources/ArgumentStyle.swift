@@ -66,4 +66,18 @@ extension ArgumentStyle {
             return false
         }
     }
+    
+    /// Returns whether the style requires to specify a value 
+    func requiresValue() -> Bool {
+        switch(self) {
+        case Optional:
+            return true
+        case Flag:
+            return false
+        case .Positional:
+            return true
+        case .Help:
+            return false
+        }
+    }
 }
