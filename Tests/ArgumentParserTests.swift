@@ -57,24 +57,6 @@ class ArgumentParserTests: XCTestCase {
             return ""
         }
     }
-    
-    func compareStringsAndFail(s1: String?, _ s2: String) {
-        let dump = { (s: String) in
-            return "➡️\(s)⬅️ size: \(s.characters.count)"
-        }
-        if s1 != s2 {
-            if let s1 = s1 {
-                print("EXPECTED")
-                print(dump(s2))
-                print("FOUND")
-                print(dump(s1))
-            }
-            else {
-                print("String is nil")
-            }
-        }
-        XCTAssertEqual(s1, s2)
-    }
 }
 
 // MARK: - Description
@@ -204,7 +186,7 @@ extension ArgumentParserTests {
         positionalArguments.forEach { sut.addArgument($0) }
         
         // then
-        compareStringsAndFail(sut.description, expected)
+        XCTAssertEqual(sut.description, expected)
     }
 }
 
