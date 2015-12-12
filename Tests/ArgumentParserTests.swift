@@ -27,36 +27,18 @@ import XCTest
 
 class ArgumentParserTests: XCTestCase {
     
+    /// Argument label with description
+    private static func argumentDescription(label: String, description: String) -> String {
+        let Padding = 30
+        let needsPadding = label.characters.count < Padding
+        let paddedFirstColumn = needsPadding ?
+            label.stringByPaddingToLength(Padding, withString: " ", startingAtIndex: 0) :
+            label + " "
+        return "\t" + paddedFirstColumn + description
+    }
+    
     /// Standard help description
-    static let helpArgumentDescription = "\t"+(HelpArgument()).description + "\n"
-    
-    /// Returns expected usage line
-    private static func expectedUsageLine(
-        scriptName: String,
-        otherArguments: String = "",
-        newLine: Bool = true) -> String {
-            return "usage: \(scriptName) [-h]" + (otherArguments.isEmpty ? "" : " "+otherArguments) + (newLine ? "\n" : "")
-    }
-    
-    /// Returns expected summary line
-    private static func expectedSummaryLine(
-        summary: String?
-        ) -> String {
-            if let summary = summary {
-                return "\n\(summary)\n\n"
-            }
-            return ""
-    }
-    
-    /// Returns expected argument list
-    private static func expectedArgumentList(type: String, arguments: [CommandLineArgument]) -> String {
-        if arguments.count > 0 {
-            return "\(type) arguments:\n" + arguments.sort { $0.label < $1.label }.map { "\t\($0)" }.joinWithSeparator("\n") + "\n"
-        }
-        else {
-            return ""
-        }
-    }
+    static let helpArgumentDescription = ArgumentParserTests.argumentDescription("--help, -h", description: "show this help message and exit")
 }
 
 // MARK: - Description
@@ -68,10 +50,15 @@ extension ArgumentParserTests {
         // given
         let summary = "A test script"
         let name = "Foo.swift"
-        let expected =
-        ArgumentParserTests.expectedUsageLine(name) +
-            ArgumentParserTests.expectedSummaryLine(summary) +
-            ArgumentParserTests.expectedArgumentList("optional", arguments: [HelpArgument()])
+        let expected = [
+            "usage: Foo.swift [-h]",
+            "",
+            "A test script",
+            "",
+            "optional arguments:",
+            ArgumentParserTests.helpArgumentDescription,
+            ""
+            ].joinWithSeparator("\n")
         
         // when
         let sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -84,7 +71,8 @@ extension ArgumentParserTests {
         
         // given
         let name = "Foo.swift"
-        let expected = ArgumentParserTests.expectedUsageLine(name, newLine: false)
+        let expected =
+            "usage: Foo.swift [-h]"
         
         // when
         let sut = try! ArgumentParser(arguments: [], summary: "A test", processName: name)
@@ -99,16 +87,23 @@ extension ArgumentParserTests {
         let summary = "A test script"
         let name = "Foo.swift"
         let positionalArguments = [
-            PositionalArgument<Int>("source", help: "An input file"),
-            PositionalArgument<Int>("destination", help: "An output file")
+            PositionalArgument<String>("source", help: "An input file"),
+            PositionalArgument<Int>("count", help: "How many times")
         ]
         
-        let expected =
-        ArgumentParserTests.expectedUsageLine(name, otherArguments: "source destination") +
-            ArgumentParserTests.expectedSummaryLine(summary) +
-            ArgumentParserTests.expectedArgumentList("positional", arguments: positionalArguments) +
-            "\n" +
-            ArgumentParserTests.expectedArgumentList("optional", arguments: [HelpArgument()])
+        let expected = [
+            "usage: Foo.swift [-h] source count<Int>",
+            "",
+            "A test script",
+            "",
+            "positional arguments:",
+            ArgumentParserTests.argumentDescription("count<Int>", description: "How many times"),
+            ArgumentParserTests.argumentDescription("source", description: "An input file"),
+            "",
+            "optional arguments:",
+            ArgumentParserTests.helpArgumentDescription,
+            ""
+        ].joinWithSeparator("\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -124,11 +119,11 @@ extension ArgumentParserTests {
         let summary = "A test script"
         let name = "Foo.swift"
         let positionalArguments = [
-            PositionalArgument<Int>("source", help: "An input file"),
-            PositionalArgument<Int>("destination", help: "An output file")
+            PositionalArgument<String>("source", help: "An input file"),
+            PositionalArgument<Int>("n", help: "Number")
         ]
         
-        let expected = ArgumentParserTests.expectedUsageLine(name, otherArguments: "source destination", newLine: false)
+        let expected = "usage: Foo.swift [-h] source n<Int>"
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -144,13 +139,21 @@ extension ArgumentParserTests {
         let summary = "A test script"
         let name = "Foo.swift"
         let optionalArguments = [
-            OptionalArgument<Int>("--source", help: "An input file"),
-            OptionalArgument<Int>("--destination", help: "An output file")
+            OptionalArgument<String>("--source", help: "An input file"),
+            OptionalArgument<Int>("--count", help: "How many times")
         ]
         
-        let expected = ArgumentParserTests.expectedUsageLine(name, otherArguments: "[--source SOURCE] [--destination DESTINATION]") +
-            ArgumentParserTests.expectedSummaryLine(summary) +
-            ArgumentParserTests.expectedArgumentList("optional", arguments: [HelpArgument()] + optionalArguments)
+        let expected = [
+            "usage: Foo.swift [-h] [--source SOURCE] [--count COUNT<Int>]",
+            "",
+            "A test script",
+            "",
+            "optional arguments:",
+            ArgumentParserTests.argumentDescription("--count COUNT<Int>", description: "How many times"),
+            ArgumentParserTests.helpArgumentDescription,
+            ArgumentParserTests.argumentDescription("--source SOURCE", description: "An input file"),
+            ""
+            ].joinWithSeparator("\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -166,19 +169,25 @@ extension ArgumentParserTests {
         let summary = "A test script"
         let name = "Foo.swift"
         let positionalArguments = [
-            PositionalArgument<Int>("file", help: "A file"),
-            PositionalArgument<Int>("folder", help: "A folder")
+            PositionalArgument<String>("file", help: "A file"),
         ]
         let optionalArguments = [
-            OptionalArgument<Int>("--source", help: "An input file"),
-            OptionalArgument<Int>("--destination", help: "An output file")
+            OptionalArgument<String>("--source", help: "An input file"),
         ]
         
-        let expected = ArgumentParserTests.expectedUsageLine("Foo.swift", otherArguments: "[--source SOURCE] [--destination DESTINATION] file folder") +
-            ArgumentParserTests.expectedSummaryLine(summary) +
-            ArgumentParserTests.expectedArgumentList("positional", arguments: positionalArguments) +
-            "\n" +
-            ArgumentParserTests.expectedArgumentList("optional", arguments: [HelpArgument()] + optionalArguments)
+        let expected = [
+            "usage: Foo.swift [-h] [--source SOURCE] file",
+            "",
+            "A test script",
+            "",
+            "positional arguments:",
+            ArgumentParserTests.argumentDescription("file", description: "A file"),
+            "",
+            "optional arguments:",
+            ArgumentParserTests.helpArgumentDescription,
+            ArgumentParserTests.argumentDescription("--source SOURCE", description: "An input file"),
+            ""
+            ].joinWithSeparator("\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)

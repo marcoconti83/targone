@@ -453,16 +453,3 @@ extension ArgumentParser {
         }
     }
 }
-
-extension CommandLineArgument {
-    
-    /// Returns the argument and the expected value, if any
-    private var compactLabelWithExpectedValue : String {
-        if(self.style.requiresAdditionalValue()) {
-            return self.compactLabel + " " + self.label.placeholderArgumentString()
-        }
-        else {
-            return self.compactLabel
-        }
-    }
-}

@@ -31,11 +31,20 @@ class ArgumentStyleTests : XCTestCase {
         XCTAssertFalse(ArgumentStyle.Positional.hasFlagLikeName())
         XCTAssertTrue(ArgumentStyle.Optional.hasFlagLikeName())
         XCTAssertTrue(ArgumentStyle.Flag.hasFlagLikeName())
+        XCTAssertTrue(ArgumentStyle.Help.hasFlagLikeName())
     }
     
     func testThatItRequiresAdditionalValues() {
         XCTAssertFalse(ArgumentStyle.Positional.requiresAdditionalValue())
         XCTAssertTrue(ArgumentStyle.Optional.requiresAdditionalValue())
         XCTAssertFalse(ArgumentStyle.Flag.requiresAdditionalValue())
+        XCTAssertFalse(ArgumentStyle.Help.requiresAdditionalValue())
+    }
+    
+    func testThatItRequiresValue() {
+        XCTAssertTrue(ArgumentStyle.Positional.requiresValue())
+        XCTAssertTrue(ArgumentStyle.Optional.requiresValue())
+        XCTAssertFalse(ArgumentStyle.Flag.requiresValue())
+        XCTAssertFalse(ArgumentStyle.Help.requiresValue())
     }
 }
