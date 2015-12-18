@@ -55,4 +55,16 @@ class ParsingResultTests: XCTestCase {
         XCTAssertNil(parsed.value(argument1))
         XCTAssertNil(parsed.value(argument2))
     }
+    
+    func testThatItReturnsBoolValues() {
+
+        // when
+        let parsed = ParsingResult(labelsToValues: ["yes" : true, "no" : false, "number" : 24, "string" : "FOO"])
+        
+        // then
+        XCTAssertTrue(parsed.boolValue("yes"))
+        XCTAssertFalse(parsed.boolValue("no"))
+        XCTAssertEqual(parsed.intValue("number"), 24)
+        XCTAssertEqual(parsed.value("string"), "FOO")
+    }
 }
