@@ -28,7 +28,7 @@ import Foundation
  Can be initialized from a string, but the initialization can fail in case the string
  does not represent a valid instance
 */
-public protocol InitializableFromString {
+public protocol InitializableFromString : Equatable {
     
     /// Fails initialization if the string does not represent a valid instance of the type
     init?(initializationString: String)

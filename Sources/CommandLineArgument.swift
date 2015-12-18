@@ -27,7 +27,6 @@ import Foundation
 /// Padding used in output for first column
 private let OutputFirstColumnPadding = 30
 
-
 /// Errors in initializing arguments
 public enum ArgumentInitError : ErrorType {
 
@@ -37,6 +36,7 @@ public enum ArgumentInitError : ErrorType {
     case ShortLabelCanNotBeLongFlag
     /// Invalid label
     case InvalidLabel
+    
 }
 
 /**
@@ -69,15 +69,32 @@ public class CommandLineArgument {
     /// The help text
     let help : String?
     
-    /// The expected type of this parameter
-    let expectedType : InitializableFromString.Type
+    /// List of accepted values, if any
+    private let choices : [Any]?
     
-    private init<Type where Type : InitializableFromString>(
+    /// The expected type of this parameter
+    let expectedType : Any.Type
+    
+    /**
+     Creates a command line argument
+     - parameter label: the label. For non positional arguments, it will be used to generate the description and to identify
+     the argument. For flag-like arguments, in addition, it will also be the label (prefixed with --) used to specify the
+     argument (e.g. `--label 2`).
+     - parameter style: the style of the argument
+     - parameter shortLabel: a short version of the label, for flag-like arguments (e.g. `--label` can be shortened to `-l`)
+     - parameter defaultValue: the default value to return when parsing, if no value is actually provided. If no value is specified,
+     the parsing will fail if the value is not specified
+     - parameter help: a help string used to describe how the argument should be used
+     - parameter choices: a list of possible values for the argument. Passing an argument that is not in this list (if the list is specified)
+    will result in a parsing error.
+     */
+    init<Type where Type : InitializableFromString>(
         label: String,
         style: ArgumentStyle,
         shortLabel: String? = nil,
         defaultValue : Type?? = nil,
-        help : String? = nil
+        help : String? = nil,
+        choices : [Type]? = nil
         ) throws
     {
         self.label = label
@@ -86,6 +103,7 @@ public class CommandLineArgument {
         self.help = help
         self.style = style
         self.expectedType = Type.self
+        self.choices = choices?.map { $0 as Any } // didn't find another way of making the compiler happy about the conversion :(
         
         if self.allLabels.filter({ !$0.isValidArgumentName() }).count > 0 {
             throw ArgumentInitError.InvalidLabel
@@ -94,6 +112,12 @@ public class CommandLineArgument {
         if let shortLabel = shortLabel where shortLabel.isLongFlagStyle() {
             throw ArgumentInitError.ShortLabelCanNotBeLongFlag
         }
+    }
+    
+    /// Attempts to parse a token matching the argument.
+    /// returns `nil` if it was not possible to parse a valid value
+    func parseValue(token: String) throws -> Any? {
+        return nil
     }
 }
 
@@ -132,12 +156,6 @@ extension CommandLineArgument {
 
 extension CommandLineArgument {
     
-    /// Attempts to parse a value matching the argument.
-    /// returns `nil` if it was not possible to parse a valid value
-    func parseValue(string: String) -> Any? {
-        return self.expectedType.init(initializationString: string)
-    }
-    
     /// Whether this argument is optional
     var isOptional : Bool {
         switch(self.style) {
@@ -173,13 +191,14 @@ extension CommandLineArgument : CustomStringConvertible {
     var compactLabelWithExpectedValue : String {
         return self.compactLabel + self.placeholderArgumentDescription() + self.typeSpecificationDescription()
     }
-    
-    public var description : String {
+
+    /// First line of the description: parameters and help
+    private var firstLineOfDescription : String {
         
         let placeholderArgument = self.placeholderArgumentDescription() + self.typeSpecificationDescription()
         let firstColumn = "\(label)" +
             (self.shortLabel != nil ? ", "+shortLabel! : "" ) +
-            placeholderArgument
+        placeholderArgument
         let secondColumn = self.help
         
         let needsPadding = firstColumn.characters.count < OutputFirstColumnPadding
@@ -194,255 +213,62 @@ extension CommandLineArgument : CustomStringConvertible {
             return firstColumn
         }
     }
-}
-
-
-// MARK: - Flag argument
-
-/**
- A flag-like command line argument
- 
-A flag argument:
-- does not require any additional value
-- has a labe that starts with "--" or "-"
-- is optional
-- parses to a `Bool` value
-
- e.g. the `quiet` argument in
-
-     do.swift --quiet`
- 
- */
-
-public class FlagArgument : CommandLineArgument {
     
-    /**
-     Returns a flag argument.
-     
-     - parameter label: the label. If the flag prefix ("--") is missing, will automatically add it
-     - parameter shortLabel: the short version of the label (e.g. "-f"). If the short flag prefix is missing, will automatically add it
-     - parameter help: the help text used to describe the parameter
-     
-     - throws: One of `ArgumentInitError` in case there is an error in the labels that are used
-    */
-    public init(
-        label: String,
-        shortLabel : String? = nil,
-        help : String? = nil
-        ) throws
-    {
-        try super.init(
-            label: label.addLongFlagPrefix(),
-            style: ArgumentStyle.Flag,
-            shortLabel: shortLabel?.addShortFlagPrefix(),
-            help : help,
-            defaultValue : false
-        )
-    }
     
-    /**
-     Returns a flag argument. This is the error-free version of the other `init`. It will assert in case of error.
-     
-     - parameter label: the label. If the flag prefix ("--") is missing, will automatically add it
-     - parameter shortLabel: the short version of the label (e.g. "-f"). If the short flag prefix is missing, will automatically add it
-     - parameter help: the help text used to describe the parameter
-     
-     */
-    public convenience init(
-        _ label: String,
-        shortLabel : String? = nil,
-        help : String? = nil
-        ) {
-            do {
-                try self.init(label: label, shortLabel: shortLabel, help: help)
-            } catch let error as Any {
-                ErrorReporting.die(error)
-            }
-    }
-}
-
-// MARK: - Optional argument
-
-/**
- An optional command line argument
-
-An optional argument:
-- requires a following additional value
-- has a label that starts with "--" or "-"
-- is optional
-
- e.g. the `speed` argument in 
-
-     do.swift --speed 10
- 
- */
-public class OptionalArgument<T where T: InitializableFromString> : CommandLineArgument {
-    
-    /**
-     Returns an optional argument.
-     
-     - parameter label: the label. If the flag prefix ("--") is missing, will automatically add it
-     - parameter shortLabel: the short version of the label (e.g. "-f"). If the short flag prefix is missing, will automatically add it
-     - parameter help: the help text used to describe the parameter
-     - parameter defaultValue: if the argument is not present on the command line, it will be set to the given default value. If no default value is given,
-     it will be set to `nil`
-     
-     - throws: One of `ArgumentInitError` in case there is an error in the labels that are used
-     */
-    public init(
-        label: String,
-        shortLabel : String? = nil,
-        defaultValue : T? = nil,
-        help : String? = nil
-        ) throws
-    {
-        try super.init(
-            label: label.addLongFlagPrefix(),
-            style: ArgumentStyle.Optional,
-            shortLabel: shortLabel?.addShortFlagPrefix(),
-            defaultValue : defaultValue,
-            help : help
-        )
-    }
-    
-    /**
-     Returns an optional argument. This is the error-free version of the other `init`. It will assert in case of error.
-     
-     - parameter label: the label. If the flag prefix ("--") is missing, will automatically add it
-     - parameter shortLabel: the short version of the label (e.g. "-f"). If the short flag prefix is missing, will automatically add it
-     - parameter help: the help text used to describe the parameter
-     - parameter defaultValue: if the argument is not present on the command line, it will be set to the given default value. If no default value is given,
-     it will be set to `nil`
-    */
-    public convenience init(
-        _ label: String,
-        shortLabel : String? = nil,
-        defaultValue : T? = nil,
-        help : String? = nil
-        ) {
-            do {
-                try self.init(label: label, shortLabel: shortLabel, defaultValue: defaultValue, help: help)
-            } catch let error as Any {
-                ErrorReporting.die(error)
-            }
-    }
-}
-
-// MARK: - Positional argument
-
-/**
- A positional command line argument
-
-A positional argument:
-- is parsed based on the order (the first positional argument will match the first non-argument token in the command line arguments)
-- is not optional
-- has a label that does not start with "--" or "-"
-
-
- e.g. the `file` argument in
-
-     do.swift file
-
- */
-public class PositionalArgument<T where T: InitializableFromString> : CommandLineArgument {
-    
-    /**
-     Returns a positional argument.
-     
-     - parameter label: the label. It should not start with "-" or "--" or it will throw an error
-     - parameter help: the help text used to describe the parameter
-     - parameter defaultValue: if the argument is not present on the command line, it will be set to the given default value. If no default value is given, there will be a parsing error
-     
-     - throws: One of `ArgumentInitError` in case there is an error in the label that is used
-     */
-    public init(
-        label: String,
-        defaultValue : T? = nil,
-        help : String? = nil
-        ) throws
-    {
-        try super.init(
-            label: label.removeFlagPrefix(),
-            style: .Positional,
-            defaultValue: defaultValue,
-            help: help
-        )
+    public var description : String {
         
-        if label.isFlagStyle() {
-            throw ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional
-        }
-    }
-    
-    /**
-     Returns a positional argument. This is the error-free version of the other `init:`. It will assert in case of error.
-     
-     - parameter label: the label. It should not start with "-" or "--" or it will throw an error
-     - parameter help: the help text used to describe the parameter
-     - parameter defaultValue: if the argument is not present on the command line, it will be set to the given default value. If no default value is given, there will be a parsing error
-     
-     */
-    public convenience init(
-        _ label: String,
-        defaultValue : T? = nil,
-        help : String? = nil
-        ) {
-        do {
-            try self.init(label: label, defaultValue: defaultValue, help: help)
-        } catch let error as Any {
-            ErrorReporting.die(error)
+        if let choices = self.choices {
+            let choicesDescription = choices.map { "'\($0)'"}.joinWithSeparator(" | ")
+            return self.firstLineOfDescription + "\n\t\t" + "Possible values: " + choicesDescription
+        } else {
+            return self.firstLineOfDescription
         }
     }
 }
 
-// MARK: - Help argument
+
+// MARK: - Typed command line argument
 
 /**
-Help argument. 
-
-This is a special case of a flag argument, but is has a special meaning for the parser.
-
-e.g. 
-    
-    do.swift --help
-
+This intermediate class is needed because CommandLineArgument has to have no generic type
+to be able to be stored in collections, but the class needs to have a generic parameter
+to be able to initalize and compare
 */
-public class HelpArgument : CommandLineArgument {
+public class TypedCommandLineArgument<T where T: InitializableFromString> : CommandLineArgument {
     
-    /**
-
-    Returns a help argument
-
-    - parameter label: the label
-    - parameter shortLabel: the short version of the label. If not specified, will default to "-h"
-    - help: the help text used to describe the parameter. If not specified, will use a standard text for the help
-
-     - throws: One of `ArgumentInitError` in case there is an error in the labels that are used
-
-    */
-    public init(
-        label: String,
-        shortLabel : String = "-h",
-        help : String = "show this help message and exit"
-        ) throws {
-            try! super.init(
-                label: label.addLongFlagPrefix(),
-                style: ArgumentStyle.Help,
-                shortLabel: shortLabel.addShortFlagPrefix(),
-                help : help,
-                defaultValue: false
-            )
+    override func parseValue(token: String) throws -> Any? {
+        if let parsedValue = T(initializationString: token) {
+            if let choices = self.choices {
+                let unwrappedChoices = choices.map { $0 as! T}
+                // don't want to use set as it will impose a Hashable restricition. Linear search.
+                let choicesContainToken = unwrappedChoices.filter({ $0 == parsedValue }).count > 0
+                if choicesContainToken {
+                    return parsedValue
+                }
+                else {
+                    throw CommandLineArgumentParsingError.NotInChoices(argument: self, validChoices: unwrappedChoices.map { $0 as Any}, token: token)
+                }
+            }
+            return parsedValue
+        }
+        return CommandLineArgumentParsingError.InvalidType(argument: self, token: token)
     }
     
-    /**
-     
-     Returns a help argument with the default labels "--help" and "-h"
-
-     */
-    public convenience init() {
-        do {
-            try self.init(label: "--help")
-        } catch let error as Any {
-            ErrorReporting.die(error)
-        }
+    init<Type where Type : InitializableFromString>(
+        label: String,
+        style: ArgumentStyle,
+        shortLabel: String? = nil,
+        defaultValue : Type?? = nil,
+        help : String? = nil,
+        choices : [Type]? = nil
+        ) throws
+    {
+        try super.init(
+            label: label,
+            style: style,
+            shortLabel: shortLabel,
+            defaultValue: defaultValue,
+            help: help,
+            choices: choices)
     }
 }
