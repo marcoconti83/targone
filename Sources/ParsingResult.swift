@@ -57,4 +57,22 @@ public struct ParsingResult {
     public func value<Type>(argument: PositionalArgument<Type>) -> Type? {
         return self.valueForArgument(argument) as? Type
     }
+    
+    /// Returns the Bool value for the given label.
+    /// It will assert if the value is not a boolean or not present
+    public func boolValue(label: String) -> Bool {
+        return self.labelsToValues[label] as! Bool
+    }
+    
+    /// Returns the String value for the given label.
+    /// It will assert if the value is not a boolean or not present
+    public func value(label: String) -> String {
+        return self.labelsToValues[label] as! String
+    }
+
+    /// Returns the Int value for the given label.
+    /// It will assert if the value is not a boolean or not present
+    public func intValue(label: String) -> Int {
+        return self.labelsToValues[label] as! Int
+    }
 }
