@@ -31,25 +31,21 @@ import Targone
 // Define parser
 var parser = ArgumentParser(summary: "Echoes some text on stdin")
 
-// Method 1: add and retrieve final value by argument
-let repetitionsArg = OptionalArgument<Int>("num", shortLabel: "n", defaultValue: 1, help: "how many times to print the text")
-parser.addArgument(repetitionsArg) 
-let textArg = PositionalArgument<String>("text")
-parser.addArgument(textArg)
+parser.addArgument(PositionalArgument<String>("text", help: "the text to print"))
+parser.addArgument(FlagArgument("quotes", help: "enclose the text within quotes"))
 
-// Method 2: add and retrieve final value by label
-parser.addArgument(FlagArgument("quotes", help: "enclode text within quotes"))
+let repetitionsArg = OptionalArgument<Int>("num", shortLabel: "n", defaultValue: 1, help: "how many times to print the text")
+parser.addArgument(repetitionsArg)
 
 // Parse
 let args = parser.parse()
 
-
-// Method 1:
+// Extracting values, method 1: extract by argument
 let repetitions = args.value(repetitionsArg)!
-let text = args.value(textArg)!
 
-// Method 2: (requires explicit casting)
-let quotes = args.labelsToValues["--quotes"] as! Bool
+// Extracting values, method 2: extract by label
+let text = args.stringValue("text")!
+let quotes = args.boolValue("quotes")!
 
 for i in 0..<repetitions {
 	print(quotes ? "\"\(text)\"" : text)

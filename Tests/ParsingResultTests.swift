@@ -56,15 +56,49 @@ class ParsingResultTests: XCTestCase {
         XCTAssertNil(parsed.value(argument2))
     }
     
-    func testThatItReturnsBoolValues() {
+    func testThatItReturnsValueByType() {
 
         // when
         let parsed = ParsingResult(labelsToValues: ["yes" : true, "no" : false, "number" : 24, "string" : "FOO"])
         
         // then
-        XCTAssertTrue(parsed.boolValue("yes"))
-        XCTAssertFalse(parsed.boolValue("no"))
-        XCTAssertEqual(parsed.intValue("number"), 24)
-        XCTAssertEqual(parsed.value("string"), "FOO")
+        XCTAssertEqual(parsed.boolValue("yes"), Optional<Bool>(true))
+        XCTAssertEqual(parsed.boolValue("no"), Optional<Bool>(false))
+        XCTAssertEqual(parsed.intValue("number"), Optional<Int>(24))
+        XCTAssertEqual(parsed.stringValue("string"), Optional<String>("FOO"))
+    }
+    
+    func testThatItReturnsValue() {
+        
+        // when
+        let parsed = ParsingResult(labelsToValues: ["yes" : true, "number" : 24, "string" : "FOO"])
+        
+        // then
+        XCTAssertEqual(parsed.value("yes") as? Bool, Optional<Bool>(true))
+        XCTAssertEqual(parsed.value("number") as? Int, Optional<Int>(24))
+        XCTAssertEqual(parsed.value("string") as? String, Optional<String>("FOO"))
+    }
+    
+    func testThatItReturnsValueWithCorrectType() {
+        
+        // when
+        let parsed = ParsingResult(labelsToValues: ["yes" : true, "number" : 24, "string" : "FOO"])
+        
+        // then
+        XCTAssertEqual(parsed.value("yes", type: Bool.self) as? Bool, Optional<Bool>(true))
+        XCTAssertEqual(parsed.value("number", type: Int.self) as? Int, Optional<Int>(24))
+        XCTAssertEqual(parsed.value("string", type: String.self) as? String, Optional<String>("FOO"))
+    }
+    
+    func testThatItDoesNotReturnValuesIfNotPresent() {
+        
+        // when
+        let parsed = ParsingResult(labelsToValues: [:])
+        
+        // then
+        XCTAssertNil(parsed.boolValue("yes"))
+        XCTAssertNil(parsed.intValue("number"))
+        XCTAssertNil(parsed.stringValue("string"))
+        XCTAssertNil(parsed.value("foo"))
     }
 }
