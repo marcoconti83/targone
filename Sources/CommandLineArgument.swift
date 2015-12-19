@@ -256,7 +256,7 @@ public class FlagArgument : CommandLineArgument {
             do {
                 try self.init(label: label, shortLabel: shortLabel, help: help)
             } catch let error as Any {
-                fatalError("\(error)")
+                ErrorReporting.die(error)
             }
     }
 }
@@ -323,7 +323,7 @@ public class OptionalArgument<T where T: InitializableFromString> : CommandLineA
             do {
                 try self.init(label: label, shortLabel: shortLabel, defaultValue: defaultValue, help: help)
             } catch let error as Any {
-                fatalError("\(error)")
+                ErrorReporting.die(error)
             }
     }
 }
@@ -389,7 +389,7 @@ public class PositionalArgument<T where T: InitializableFromString> : CommandLin
         do {
             try self.init(label: label, defaultValue: defaultValue, help: help)
         } catch let error as Any {
-            fatalError("\(error)")
+            ErrorReporting.die(error)
         }
     }
 }
@@ -442,7 +442,7 @@ public class HelpArgument : CommandLineArgument {
         do {
             try self.init(label: "--help")
         } catch let error as Any {
-            fatalError("\(error)")
+            ErrorReporting.die(error)
         }
     }
 }

@@ -128,7 +128,7 @@ extension ArgumentParser {
             do {
                 try self.init(arguments: arguments, summary: summary, processName: ArgumentParser.currentScriptName(), helpArgument: help, helpRequestHandler: nil)
             } catch let error as Any {
-                fatalError("\(error)")
+                ErrorReporting.die(error)
             }
     }
 }
@@ -169,7 +169,7 @@ extension ArgumentParser {
         do {
             try self.validateArguments()
         } catch let error as Any {
-            fatalError("\(error)")
+            ErrorReporting.die(error)
         }
     }
     
@@ -369,7 +369,7 @@ extension ArgumentParser {
             errorHandler(err)
             return ParsingResult(labelsToValues: [:])
         } catch {
-            fatalError()
+            ErrorReporting.die(error)
         }
     }
     
@@ -408,7 +408,7 @@ extension ArgumentParser {
                 case .Flag:
                     flagsLeft.remove(argument)
                 default:
-                    fatalError("Was not expecting this type of argument: \(argument.style)")
+                    ErrorReporting.die("Was not expecting this type of argument: \(argument.style)")
                 }
                 parsedArguments[argument.label] = try self.parseFlagStyleArgument(argument) { generator.next() }
             }
