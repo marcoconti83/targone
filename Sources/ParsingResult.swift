@@ -29,50 +29,76 @@ import Foundation
 public struct ParsingResult {
     
     /// Map from labels to values
-    public let labelsToValues: [String : Any]
+    private let labelsToValues: [String : Any]
     
+    /// Creates a parsing result from a mapping of argument labels to values.
+    /// Argument labels will be stripped of the flag prefix ("--" or "-")
     init(labelsToValues: [String : Any]) {
-        self.labelsToValues = labelsToValues
+        var noflagLabelsToValues = [String:Any]()
+        labelsToValues.forEach{ (key, value) in
+            noflagLabelsToValues[key.removeFlagPrefix()] = value
+        }
+        self.labelsToValues = noflagLabelsToValues
     }
     
-    /// Returns the value matching the argument label, only if the value
+    /// - returns: the value matching the argument label, only if the value
     /// is of the type expected from the argument
+    /// - warning: it will abort execution and print an error if value is not of the required type
     private func valueForArgument(argument: CommandLineArgument) -> Any? {
-        guard let value = labelsToValues[argument.label] else { return nil }
-        let mirror = Mirror(reflecting: value)
-        return (mirror.subjectType == argument.expectedType) ? value : nil
+        guard let value = labelsToValues[argument.label.removeFlagPrefix()] else { return nil }
+        return (value.dynamicType == argument.expectedType) ? value : nil
     }
     
-    /// Returns the value parsed for the given flag
+    /// - returns: the value parsed for the given flag
+    /// - warning: it will abort execution and print an error if value is not of the required type
     public func value(argument: FlagArgument) -> Bool? {
         return self.valueForArgument(argument) as? Bool
     }
     
-    /// Returns the value parsed for the given optional argument
+    /// - returns: the value parsed for the given optional argument
+    /// - warning: it will abort execution and print an error if value is not of the required type
     public func value<Type>(argument: OptionalArgument<Type>) -> Type? {
         return self.valueForArgument(argument) as? Type
     }
     
-    /// Returns the value parsed for the given positional argument
+    /// - returns: the value parsed for the given positional argument
+    /// - warning: it will abort execution and print an error if value is not of the required type
     public func value<Type>(argument: PositionalArgument<Type>) -> Type? {
         return self.valueForArgument(argument) as? Type
     }
     
-    /// Returns the Bool value for the given label.
-    /// It will assert if the value is not a boolean or not present
-    public func boolValue(label: String) -> Bool {
-        return self.labelsToValues[label] as! Bool
+    /// - returns: the Bool value for the given label.
+    /// - warning: it will abort execution and print an error if the value is not a Bool
+    public func boolValue(label: String) -> Bool? {
+        return (value(label, type: Bool.self) as! Bool?)
     }
     
-    /// Returns the String value for the given label.
-    /// It will assert if the value is not a boolean or not present
-    public func value(label: String) -> String {
-        return self.labelsToValues[label] as! String
+    /// - returns: the String value for the given label.
+    /// - warning: it will abort execution and print an error if the value is not a String
+    public func stringValue(label: String) -> String? {
+        return (value(label, type: String.self) as! String?)
     }
 
-    /// Returns the Int value for the given label.
-    /// It will assert if the value is not a boolean or not present
-    public func intValue(label: String) -> Int {
-        return self.labelsToValues[label] as! Int
+    /// - returns: the Int value for the given label.
+    /// - warning: it will abort execution and print an error if the value is not an Int
+    public func intValue(label: String) -> Int? {
+        return (value(label, type: Int.self) as! Int?)
+    }
+    
+    /// - returns: a value that is guaranteed to be of the required type if present.
+    /// - warning: it will abort execution and print an error if value is not of the required type
+    public func value(label: String, type: Any.Type) -> Any? {
+        if let value = self.value(label) {
+            if value.dynamicType != type {
+                ErrorReporting.die("value for label '\(label)' has actual type '\(label.dynamicType)' and not requested type '\(type.self)'")
+            }
+            return value
+        }
+        return nil
+    }
+    
+    /// - returns: the value for the given label if present, or nil
+    public func value(label: String) -> Any? {
+        return self.labelsToValues[label]
     }
 }

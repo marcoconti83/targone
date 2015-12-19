@@ -423,9 +423,9 @@ extension ArgumentParserTests {
         }
         
         // then
-        XCTAssertEqual(parsed.labelsToValues["--foo"] as? Bool, Optional<Bool>(true))
-        XCTAssertEqual(parsed.labelsToValues["--bar"] as? Bool, Optional<Bool>(false))
-        XCTAssertEqual(parsed.labelsToValues["--baz"] as? Bool, Optional<Bool>(true))
+        XCTAssertEqual(parsed.boolValue("foo"), Optional<Bool>(true))
+        XCTAssertEqual(parsed.boolValue("bar"), Optional<Bool>(false))
+        XCTAssertEqual(parsed.boolValue("baz"), Optional<Bool>(true))
     }
     
     func testThatItParsesPositionalArguments() {
@@ -441,8 +441,8 @@ extension ArgumentParserTests {
         }
         
         // then
-        XCTAssertEqual(parsed.labelsToValues["foo"] as? String, Optional<String>("fox"))
-        XCTAssertEqual(parsed.labelsToValues["bar"] as? Int, Optional<Int>(12))
+        XCTAssertEqual(parsed.stringValue("foo"), Optional<String>("fox"))
+        XCTAssertEqual(parsed.intValue("bar"), Optional<Int>(12))
     }
     
     func testThatItParsesOptionalArguments() {
@@ -459,9 +459,9 @@ extension ArgumentParserTests {
         }
         
         // then
-        XCTAssertEqual(parsed.labelsToValues["--foo"] as? Int, Optional<Int>(12))
-        XCTAssertNil(parsed.labelsToValues["--bar"])
-        XCTAssertEqual(parsed.labelsToValues["--max"] as? String, Optional<String>("oh"))
+        XCTAssertEqual(parsed.intValue("foo"), Optional<Int>(12))
+        XCTAssertNil(parsed.intValue("bar"))
+        XCTAssertEqual(parsed.stringValue("max"), Optional<String>("oh"))
     }
     
     func testThatItParsesCombinedArgumentTypes() {
@@ -478,9 +478,9 @@ extension ArgumentParserTests {
         }
         
         // then
-        XCTAssertEqual(parsed.labelsToValues["--foo"] as? Int, Optional<Int>(12))
-        XCTAssertEqual(parsed.labelsToValues["bar"] as? Double, Optional<Double>(50.2))
-        XCTAssertNil(parsed.labelsToValues["--max"])
+        XCTAssertEqual(parsed.intValue("foo"), Optional<Int>(12))
+        XCTAssertEqual(parsed.value("bar") as? Double, Optional<Double>(50.2))
+        XCTAssertNil(parsed.stringValue("max"))
     }
 }
 
@@ -572,6 +572,22 @@ extension ArgumentParserTests {
             let _ = try ArgumentParser(arguments: [arg1, arg2])
         } catch ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(let label) {
             XCTAssertEqual(label, "-f")
+        } catch {
+            XCTFail("Unexpected error")
+        }
+    }
+    
+    func testThatItThrowsIfInitializedWithArgumentsWithDuplicatedLabelWithAndWithoutFlagPrefix() {
+        
+        // given
+        let arg1 = FlagArgument("foo")
+        let arg2 = OptionalArgument<Int>("--foo", shortLabel: "-f")
+        
+        // when
+        do {
+            let _ = try ArgumentParser(arguments: [arg1, arg2])
+        } catch ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(let label) {
+            XCTAssertEqual(label, "--foo")
         } catch {
             XCTFail("Unexpected error")
         }
