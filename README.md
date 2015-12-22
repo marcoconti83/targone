@@ -3,6 +3,8 @@
 
 Targone is a command line argument parser for Swift scripts, inspired by [Python argparse](https://docs.python.org/2/library/argparse.html). It allows script authors to easily define what kind of arguments are expected, whether they are optional, positional or flags, and automatically generate usage description.
 
+See also [Morione](https://github.com/marcoconti83/morione), A Swift subprocess execution library intended to be used in Swift scripts, inspired by Python `subprocess`.
+
 ## API design
 
 Targone public API is designed keeping in mind ease of use within a script. 

@@ -102,7 +102,7 @@ public class CommandLineArgument {
 extension CommandLineArgument : Hashable {
     
     public var hashValue : Int {
-        return self.label.hashValue + (self.shortLabel?.hashValue ?? 0)
+        return self.label.hashValue ^ (self.shortLabel?.hashValue ?? 0)
     }
 }
 

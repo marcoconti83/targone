@@ -218,6 +218,16 @@ extension CommandLineArgumentTests {
         // then
         XCTAssertEqual(sut.allLabels, Set(["--number"]))
     }
+    
+    func testThatHashOfCommandWithoutShortLabelIsDifferentThanCommandWithShortLabel() {
+        
+        // given
+        let arg1 = OptionalArgument<Int>("foo")
+        let arg2 = OptionalArgument<Int>("foo", shortLabel: "f")
+        
+        // then
+        XCTAssertNotEqual(arg1.hashValue, arg2.hashValue)
+    }
 }
 
 // MARK: - Description
