@@ -210,21 +210,57 @@ extension ArgumentParserTests {
         let argument2 = PositionalArgument<String>("bar")
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["12"]) { error in
             switch(error) {
             case ArgumentParsingError.TooFewArguments:
-                expectation.fulfill()
+                break
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
+    }
+    
+    func testThatItThrowsWhenAnOptionalArgumentWithChoicesHasAnInvalidChoice() {
         
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        // given
+        let value = "12"
+        let choices : [Int] = [3,4]
+        let argument = OptionalArgument<Int>("foo", choices: choices)
+        let parser = ArgumentParser(argument, summary: "Parser")
+        
+        // when
+        parser.parse(["--foo",value]) { error in
+            switch(error) {
+            case CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token):
+                XCTAssertEqual(argument.label, "--foo")
+                XCTAssertEqual(validChoices.map { $0 as! Int}, choices)
+                XCTAssertEqual(token, value)
+            default:
+                XCTFail("Unexpected error \(error)")
+            }
+        }
+    }
+    
+    func testThatItThrowsWhenAPositionalArgumentWithChoicesHasAnInvalidChoice() {
+        
+        // given
+        let value = "12"
+        let choices = [3,4]
+        let argument = PositionalArgument<Int>("foo", choices: choices)
+        let parser = ArgumentParser(argument, summary: "Parser")
+        
+        // when
+        parser.parse([value]) { error in
+            switch(error) {
+            case CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token):
+                XCTAssertEqual(argument.label, "foo")
+                XCTAssertEqual(token, value)
+                XCTAssertEqual(choices, validChoices.map { $0 as! Int })
+            default:
+                XCTFail("Unexpected error \(error)")
+            }
+        }
     }
     
     func testThatItThrowsWhenExpectingParameterAfterTokenButThereAreNoMoreArguments() {
@@ -233,22 +269,15 @@ extension ArgumentParserTests {
         let argument1 = OptionalArgument<Int>("--foo")
         let parser = ArgumentParser(argument1, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["--foo"]) { error in
             switch(error) {
             case ArgumentParsingError.ParameterExpectedAfterToken(let previousToken):
                 XCTAssertEqual(previousToken, "--foo")
-                expectation.fulfill()
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
-        
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testThatItThrowsWhenExpectingParameterAfterTokenButThereIsAnotherFlag() {
@@ -258,22 +287,15 @@ extension ArgumentParserTests {
         let argument2 = FlagArgument("--bar")
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["--foo","--bar"]) { error in
             switch(error) {
             case ArgumentParsingError.ParameterExpectedAfterToken(let previousToken):
                 XCTAssertEqual(previousToken, "--foo")
-                expectation.fulfill()
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
-        
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testThatItThrowsWhenNotExpectingPositionalParameter() {
@@ -283,22 +305,15 @@ extension ArgumentParserTests {
         let argument2 = FlagArgument("--bar")
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["--foo","12", "--bar"]) { error in
             switch(error) {
             case ArgumentParsingError.UnexpectedPositionalArgument(let token):
                 XCTAssertEqual(token, "12")
-                expectation.fulfill()
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
-        
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testThatItThrowsWhenTheTypeDoesNotMatch() {
@@ -308,24 +323,16 @@ extension ArgumentParserTests {
         let argument2 = PositionalArgument<Int>("bar")
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["--foo","12.4"]) { error in
             switch(error) {
-            case ArgumentParsingError.InvalidArgumentType(let expectedType, let label, let token):
+            case CommandLineArgumentParsingError.InvalidType(let argument, let token):
                 XCTAssertEqual(token, "12.4")
-                XCTAssertEqual(label, "bar")
-                XCTAssert(expectedType == Int.self)
-                expectation.fulfill()
+                XCTAssertEqual(argument.label, "--foo")
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
-        
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
     }
     
     func testThatItThrowsWhenThereAreTooFewArguments() {
@@ -335,73 +342,15 @@ extension ArgumentParserTests {
         let argument2 = PositionalArgument<Int>("bar")
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
-        // expect
-        let expectation = self.expectationWithDescription("expected failure")
-        
         // when
         parser.parse(["--foo"]) { error in
             switch(error) {
             case ArgumentParsingError.TooFewArguments:
-                expectation.fulfill()
+                break
             default:
                 XCTFail("Unexpected error \(error)")
             }
         }
-        
-        // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
-    }
-    
-    func testThatItPrintsParameterExpectedAfterTokenError() {
-        
-        // given
-        let sut = ArgumentParsingError.ParameterExpectedAfterToken(previousToken: "foo")
-        
-        // when
-        let output = "\(sut)"
-        
-        // then
-        let expected = "argument foo: expected one argument"
-        XCTAssertEqual(expected, output)
-    }
-    
-    func testThatItPrintsInvalidArgumentTypeError() {
-        
-        // given
-        let sut = ArgumentParsingError.InvalidArgumentType(expectedType: Int.self, label: "foo", token: "bar")
-        
-        // when
-        let output = "\(sut)"
-        
-        // then
-        let expected = "argument foo: invalid Int value: bar"
-        XCTAssertEqual(expected, output)
-    }
-    
-    func testThatItPrintsUnexpectedPositionalArgumentError() {
-        
-        // given
-        let sut = ArgumentParsingError.UnexpectedPositionalArgument(token: "foo")
-        
-        // when
-        let output = "\(sut)"
-        
-        // then
-        let expected = "unrecognized parameter: foo"
-        XCTAssertEqual(expected, output)
-    }
-    
-    func testThatItPrintsTooFewArgumentsError() {
-        
-        // given
-        let sut = ArgumentParsingError.TooFewArguments
-        
-        // when
-        let output = "\(sut)"
-        
-        // then
-        let expected = "too few arguments"
-        XCTAssertEqual(expected, output)
     }
 }
 
@@ -481,6 +430,32 @@ extension ArgumentParserTests {
         XCTAssertEqual(parsed.intValue("foo"), Optional<Int>(12))
         XCTAssertEqual(parsed.value("bar") as? Double, Optional<Double>(50.2))
         XCTAssertNil(parsed.stringValue("max"))
+    }
+    
+    func testThatItParsesAnOptionalArgumentWithChoices() {
+        
+        // given
+        let argument = OptionalArgument<Int>("foo", choices: [3,4])
+        let parser = ArgumentParser(argument, summary: "Parser")
+        
+        // when
+        let result = parser.parse(["--foo","3"])
+        
+        // then
+        XCTAssertEqual(result.intValue("foo"), 3)
+    }
+    
+    func testThatItParsesAPositionalArgumentWithChoices() {
+        
+        // given
+        let argument = PositionalArgument<Int>("foo", choices: [3,4])
+        let parser = ArgumentParser(argument, summary: "Parser")
+        
+        // when
+        let result = parser.parse(["3"])
+        
+        // then
+        XCTAssertEqual(result.intValue("foo"), 3)
     }
 }
 
@@ -615,7 +590,7 @@ extension ArgumentParserTests {
 
 extension ArgumentParserTests {
 
-    func testThatItReturnsTheDefaultValueIfTheValueIsNotSpecified() {
+    func testThatItReturnsTheDefaultValueForOptionalIfTheValueIsNotSpecified() {
         
         // given
         let arg1 = OptionalArgument<Int>("--foo", shortLabel: "-f", defaultValue: 100)

@@ -54,13 +54,6 @@ public struct ArgumentParser {
 
 }
 
-/// Error during initialization or when adding an additional argument to a parser
-public enum ArgumentParserInitError : ErrorType {
-    
-    /// There is more than one argument with the same label
-    case MoreThanOneArgumentWithSameLabel(label: String)
-}
-
 extension Array where Element: CommandLineArgument {
     
     /// Returns any duplicated label
@@ -276,49 +269,12 @@ extension ArgumentParser {
 
 // MARK: - Parsing
 
-/// Error in parsing tokens from command line
-public enum ArgumentParsingError : ErrorType, CustomStringConvertible {
-    
-    /// The previous token requires a parameter, but there is no following valid token
-    case ParameterExpectedAfterToken(previousToken: String)
-    
-    /// Unexpected positional arguments. No more positional arguments were expected
-    case UnexpectedPositionalArgument(token: String)
-    
-    /// The token could not be parsed as an argument of the given type
-    case InvalidArgumentType(expectedType: Any.Type, label: String, token: String)
-    
-    /// Too few arguments
-    case TooFewArguments
-    
-    public var description : String {
-        switch(self) {
-        case .ParameterExpectedAfterToken(let previousToken):
-            return "argument \(previousToken): expected one argument"
-        case .UnexpectedPositionalArgument(let token):
-            return "unrecognized parameter: \(token)"
-        case .InvalidArgumentType(let expectedType, let label, let token):
-            return "argument \(label): invalid \(expectedType) value: \(token)"
-        case .TooFewArguments:
-            return "too few arguments"
-        }
-    }
-}
-
-extension Array where Element : CommandLineArgument {
-    
-    /// Filter arguments by type
-    private func filterByType(type: ArgumentStyle) -> [CommandLineArgument] {
-        return self.filter { $0.style == type }
-    }
-}
-
 extension ArgumentParser {
     
-    public typealias ParsingErrorHandler = (error: ArgumentParsingError)->()
-    
+    public typealias ParsingErrorHandler = (error: ErrorType)->()
+
     /// Prints compact usage and exits with status 1
-    @noreturn private func printUsageAndExit(error: ArgumentParsingError)  {
+    @noreturn private func printUsageAndExit(error: ErrorType)  {
         print(self.shortDescription)
         print("\(self.scriptName): error: \(error)")
         exit(1)
@@ -356,100 +312,18 @@ extension ArgumentParser {
         // should I use default handlers?
         let errorHandler = parsingErrorHandler != nil ? parsingErrorHandler! : { self.printUsageAndExit($0) }
         
-        // create a cache for fast lookup of flag/optional by label
-        var flagsLabelsToArgumentsCache : [String : CommandLineArgument] = [:]
-        self.expectedArguments.filter { $0.style.hasFlagLikeName()}.forEach { arg in arg.allLabels.forEach {flagsLabelsToArgumentsCache[$0] = arg} }
-        
         // actual parsing of parameters
         do {
-            return try ArgumentParser.parse(commandLineTokens,
-                flagLookupCache: flagsLabelsToArgumentsCache,
-                expectedArguments : self.expectedArguments)
+            let parsedStatus = try ParsingStatus(expectedArguments: self.expectedArguments, tokensToParse: commandLineTokens)
+            return ParsingResult(labelsToValues: parsedStatus.parsedArguments)
         } catch let err as ArgumentParsingError {
+            errorHandler(err)
+            return ParsingResult(labelsToValues: [:])
+        } catch let err as CommandLineArgumentParsingError {
             errorHandler(err)
             return ParsingResult(labelsToValues: [:])
         } catch {
             ErrorReporting.die(error)
-        }
-    }
-    
-    /**
-
-     Parses the given tokens
-     
-     - parameter tokens: list of tokens to parse
-     - parameter flagLookupCache: label to argument map
-     - parameter expectedArguments: the expected arguments
-     
-     */
-    private static func parse(
-            tokens: [String],
-            flagLookupCache: [String : CommandLineArgument],
-            expectedArguments : [CommandLineArgument]
-    ) throws -> ParsingResult {
-        
-        var generator = tokens.generate()
-        var nextToken = generator.next()
-        var parsedArguments : [String : Any] = [:]
-        
-        var flagsLeft = Set(expectedArguments.filterByType(.Flag))
-        var positionalsLeft = expectedArguments.filterByType(.Positional)
-        var optionalsLeft = Set(expectedArguments.filterByType(.Optional))
-        
-        while (nextToken != nil) {
-            guard let token = nextToken else { break }
-            defer { nextToken = generator.next() }
-            
-            // what kind of argument?
-            if let argument = flagLookupCache[token] {
-                switch(argument.style) {
-                case .Optional:
-                    optionalsLeft.remove(argument)
-                case .Flag:
-                    flagsLeft.remove(argument)
-                default:
-                    ErrorReporting.die("Was not expecting this type of argument: \(argument.style)")
-                }
-                parsedArguments[argument.label] = try self.parseFlagStyleArgument(argument) { generator.next() }
-            }
-            else {
-                // positional
-                guard let positional = positionalsLeft.first else { throw ArgumentParsingError.UnexpectedPositionalArgument(token: token) }
-                guard let parsedValue = positional.parseValue(token) else { throw ArgumentParsingError.InvalidArgumentType(expectedType: positional.expectedType, label: positional.label, token: token) }
-                
-                positional.allLabels.forEach { parsedArguments[$0] = parsedValue }
-                positionalsLeft.removeFirst()
-            }
-        }
-        
-        // are there still some argument? then it's an error
-        if positionalsLeft.count > 0 {
-            throw ArgumentParsingError.TooFewArguments
-        }
-        
-        // are there still some flag arguments? then they are false
-        flagsLeft.forEach { $0.allLabels.forEach { parsedArguments[$0] = false } }
-        
-        // are there still some optional arguments? then take the default, if any
-        optionalsLeft.forEach {
-            if let value = $0.defaultValue {
-                $0.allLabels.forEach { parsedArguments[$0] = value }
-            }
-        }
-        
-        return ParsingResult(labelsToValues: parsedArguments)
-    }
-    
-    /// Attempts to parse a flag style argument and returns the value
-    private static func parseFlagStyleArgument(argument: CommandLineArgument, nextArgumentGenerator: ()->String?)  throws -> Any? {
-        if argument.style.requiresAdditionalValue() {
-            // optional
-            guard let followingToken = nextArgumentGenerator() where !followingToken.isFlagStyle()
-                else { throw ArgumentParsingError.ParameterExpectedAfterToken(previousToken: argument.label) }
-            return argument.parseValue(followingToken)
-        } else {
-            // flag
-            return true
         }
     }
 }
