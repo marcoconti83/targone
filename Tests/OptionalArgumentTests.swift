@@ -25,16 +25,15 @@
 import XCTest
 @testable import Targone
 
-class CommandLineArgumentTests: XCTestCase {
+class OptionalArgumentTests: XCTestCase {
     
 }
 
-
 // MARK: - Label
 
-extension CommandLineArgumentTests {
-
-    func testThatItDoesNotRemoveDashesFromOptionalLabels() {
+extension OptionalArgumentTests {
+    
+    func testThatItDoesNotRemoveDashesFromLabels() {
         
         // given
         let shortLabel = "-n"
@@ -48,7 +47,7 @@ extension CommandLineArgumentTests {
         XCTAssertEqual(argument.label, longLabel)
     }
     
-    func testThatItDoesAddDashesToOptionalLabels() {
+    func testThatItDoesAddDashesToLabels() {
         
         // given
         let shortLabel = "n"
@@ -61,35 +60,7 @@ extension CommandLineArgumentTests {
         XCTAssertEqual(argument.allLabels, ["--number","-n"])
         XCTAssertEqual(argument.label, "--number")
     }
-    
-    func testThatItDoesNotRemoveDashesFromFlagLabels() {
-        
-        // given
-        let shortLabel = "-n"
-        let longLabel = "--number"
-        
-        // when
-        let argument = FlagArgument(longLabel, shortLabel: shortLabel)
-        
-        // then
-        XCTAssertEqual(argument.allLabels, [longLabel, shortLabel])
-        XCTAssertEqual(argument.label, longLabel)
-    }
 
-    func testThatItDoesAddsDashesToFlagLabels() {
-        
-        // given
-        let shortLabel = "n"
-        let longLabel = "number"
-        
-        // when
-        let argument = FlagArgument(longLabel, shortLabel: shortLabel)
-        
-        // then
-        XCTAssertEqual(argument.allLabels, ["--number","-n"])
-        XCTAssertEqual(argument.label, "--number")
-    }
-    
     func testThatItUsesShortLabelAsCompactLabel() {
         
         // given
@@ -109,28 +80,16 @@ extension CommandLineArgumentTests {
         let longLabel = "--number"
         
         // when
-        let argument = FlagArgument(longLabel)
+        let argument = OptionalArgument<Double>(longLabel)
         
         // then
         XCTAssertEqual(argument.compactLabel, "--number")
     }
- 
-    func testThatShortLabelCanNotBeLongFlagForOptional() {
+    
+    func testThatShortLabelCanNotBeLongFlag() {
         // when
         do {
             _ = try OptionalArgument<Int>(label: "--number", shortLabel: "--number")
-            XCTFail("Did not throw")
-        } catch ArgumentInitError.ShortLabelCanNotBeLongFlag{
-            // pass
-        } catch let error as Any {
-            XCTFail("Unexpected error: \(error)")
-        }
-    }
-    
-    func testThatShortLabelCanNotBeLongFlagForFlag() {
-        // when
-        do {
-            _ = try FlagArgument(label: "--number", shortLabel: "--number")
             XCTFail("Did not throw")
         } catch ArgumentInitError.ShortLabelCanNotBeLongFlag{
             // pass
@@ -148,37 +107,11 @@ extension CommandLineArgumentTests {
         }
     }
     
-    func testThatAnArgumentStartingWithDashDashThrowsIfPositional() {
-        
-        // when
-        do {
-            _ = try PositionalArgument<Int>(label: "--number")
-            XCTFail("Did not throw")
-        } catch ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional{
-            // pass
-        } catch let error as Any {
-            XCTFail("Unexpected error: \(error)")
-        }
-    }
-    
-    func testThatAnArgumentStartingWithDashThrowsIfPositional() {
-        
-        // when
-        do {
-            _ = try PositionalArgument<Int>(label: "-n")
-            XCTFail("Did not throw")
-        } catch ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional{
-            // pass
-        } catch let error as Any {
-            XCTFail("Unexpected error: \(error)")
-        }
-    }
-    
     func testThatAnInvalidLabelThrows() {
         
         // when
         do {
-            _ = try PositionalArgument<Int>(label: "-n  ds")
+            _ = try OptionalArgument<Int>(label: "-n  ds")
             XCTFail("Did not throw")
         } catch ArgumentInitError.InvalidLabel{
             // pass
@@ -199,14 +132,13 @@ extension CommandLineArgumentTests {
             XCTFail("Unexpected error: \(error)")
         }
     }
-
     
     func testThatItReturnsAllLabelsWhenBothAreSet() {
         
         // given
         let sut = OptionalArgument<Int>("--number", shortLabel: "-n")
         
-        // then 
+        // then
         XCTAssertEqual(sut.allLabels, Set(["--number","-n"]))
     }
     
@@ -232,20 +164,9 @@ extension CommandLineArgumentTests {
 
 // MARK: - Description
 
-extension CommandLineArgumentTests {
+extension OptionalArgumentTests {
 
-    func testExpectedFlagDescription() {
-        do {
-            let sut = FlagArgument("--boo", shortLabel: "-b", help: "help help")
-            XCTAssertEqual(sut.description, "--boo, -b                     help help")
-        }
-        do {
-            let sut = FlagArgument("--boo")
-            XCTAssertEqual(sut.description, "--boo")
-        }
-    }
-    
-    func testExpectedOptionaDescription() {
+    func testExpectedDescription() {
         
         do {
             let sut = OptionalArgument<Int>("--boo", shortLabel: "-b", help: "help help")
@@ -256,39 +177,12 @@ extension CommandLineArgumentTests {
             XCTAssertEqual(sut.description, "--boo BOO<Int>")
         }
     }
-
-    func testExpectedPositionalDescription() {
-        
-        do {
-            let sut = PositionalArgument<Int>("foo", help: "help help")
-            XCTAssertEqual(sut.description, "foo<Int>                      help help")
-        }
-        do {
-            let sut = PositionalArgument<Int>("foo")
-            XCTAssertEqual(sut.description, "foo<Int>")
-        }
-    }
     
-    func testDescriptionWithNameLongerThanPadding() {
-        
-        // given
-        let label = "--a1234567890123456789012345678901234567890"
-        let help = "foo"
-        let sut = FlagArgument(label, help: help)
-        let expected = "\(label) \(help)"
-        
-        // when
-        let description = sut.description
-        
-        // then
-        XCTAssertEqual(description, expected)
-    }
-    
-    func testDescriptionWithOptionalLongerThanPadding() {
+    func testDescriptionWithFlagLongerThanPadding() {
         
         // given
         let label = "--foooooooooooooooooooooooooooooooooooo"
-        let help = "foo"
+        let help = "This is the help"
         let sut = OptionalArgument<Int>(label, help: help)
         let expected = "\(label) \(label.placeholderArgumentString())<Int> \(help)"
         
@@ -298,19 +192,39 @@ extension CommandLineArgumentTests {
         // then
         XCTAssertEqual(description, expected)
     }
+    
+    func testExpectedDescriptionWithChoices() {
+        
+        // given
+        let label = "--foo"
+        let help = "This is the help"
+        let choices = [34,45,675]
+        let choicesDescription = choices.map {"'\($0)'"}.joinWithSeparator(" | ")
+        let sut = OptionalArgument<Int>(label, help: help, choices: choices)
+        
+        let expected = "\(label) \(label.placeholderArgumentString())<Int>                \(help)\n\t\tPossible values: \(choicesDescription)"
+        
+        // when
+        let description = sut.description
+        
+        // then
+        XCTAssertEqual(description, expected)
+        
+    }
 }
+
 
 // MARK: - Parsing
 
-extension CommandLineArgumentTests {
-    
+extension OptionalArgumentTests {
+
     func testThatItReturnsTheValueWhenParsingAValidInt() {
         
         // given
-        let sut = PositionalArgument<Int>("foo")
+        let sut = OptionalArgument<Int>("foo")
         
         // when
-        let parsed = sut.parseValue("34") as? Int
+        let parsed = try! sut.parseValue("34") as? Int
         
         // then
         XCTAssertNotNil(parsed)
@@ -322,22 +236,27 @@ extension CommandLineArgumentTests {
     func testThatItReturnsNilWhenParsingAnInvalidInt() {
         
         // given
-        let sut = PositionalArgument<Int>("foo")
+        let value = "34.2"
+        let sut = OptionalArgument<Int>("foo")
         
         // when
-        let parsed = sut.parseValue("34.2")
-        
-        // then
-        XCTAssertNil(parsed)
+        do {
+            try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            XCTAssertEqual(argument, sut)
+            XCTAssertEqual(token, value)
+        } catch {
+            XCTFail("Unexpected error")
+        }
     }
     
     func testThatItReturnsTheValueWhenParsingAString() {
         
         // given
-        let sut = PositionalArgument<String>("foo")
+        let sut = OptionalArgument<String>("foo")
         
         // when
-        let parsed = sut.parseValue("34a") as? String
+        let parsed = try! sut.parseValue("34a") as? String
         
         // then
         XCTAssertNotNil(parsed)
@@ -349,10 +268,10 @@ extension CommandLineArgumentTests {
     func testThatItReturnsTheValueWhenParsingAValidDouble() {
         
         // given
-        let sut = PositionalArgument<Double>("foo")
+        let sut = OptionalArgument<Double>("foo")
         
         // when
-        let parsed = sut.parseValue("34.2") as? Double
+        let parsed = try! sut.parseValue("34.2") as? Double
         
         // then
         XCTAssertNotNil(parsed)
@@ -364,23 +283,29 @@ extension CommandLineArgumentTests {
     func testThatItReturnsNilWhenParsingAnInvalidDouble() {
         
         // given
-        let sut = PositionalArgument<Double>("foo")
+        let value = "34.2a"
+        let sut = OptionalArgument<Double>("foo")
         
         // when
-        let parsed = sut.parseValue("34.2a")
-        
-        // then
-        XCTAssertNil(parsed)
+        // when
+        do {
+            try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            XCTAssertEqual(argument, sut)
+            XCTAssertEqual(token, value)
+        } catch {
+            XCTFail("Unexpected error")
+        }
     }
     
     func testThatItReturnsTheValueWhenParsingAValidTrueBool() {
         
         // given
-        let sut = PositionalArgument<Bool>("foo")
+        let sut = OptionalArgument<Bool>("foo")
         
         for value in ["TRUE","true","1"] {
             // when
-            let parsed = sut.parseValue(value) as? Bool
+            let parsed = try! sut.parseValue(value) as? Bool
             
             // then
             XCTAssertNotNil(parsed)
@@ -393,11 +318,11 @@ extension CommandLineArgumentTests {
     func testThatItReturnsTheValueWhenParsingAValidFalseBool() {
         
         // given
-        let sut = PositionalArgument<Bool>("foo")
+        let sut = OptionalArgument<Bool>("foo")
         
         for value in ["FALSE","false","0"] {
             // when
-            let parsed = sut.parseValue(value) as? Bool
+            let parsed = try! sut.parseValue(value) as? Bool
             
             // then
             XCTAssertNotNil(parsed)
@@ -410,39 +335,65 @@ extension CommandLineArgumentTests {
     func testThatItReturnsNilWhenParsingAnInvalidBool() {
         
         // given
-        let sut = PositionalArgument<Bool>("foo")
+        let value = "24"
+        let sut = OptionalArgument<Bool>("foo")
         
         // when
-        let parsed = sut.parseValue("24")
+        do {
+            try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            XCTAssertEqual(argument, sut)
+            XCTAssertEqual(token, value)
+        } catch {
+            XCTFail("Unexpected error")
+        }
+    }
+    
+    func testThatItReturnsNilWhenParsingAValueThatIsNotInTheChoices() {
         
-        // then
-        XCTAssertNil(parsed)
+        // given
+        let choices = [2,4,8,16]
+        let value = "24"
+        let sut = OptionalArgument<Int>("--foo", choices: [2,4,8,16])
+        
+        // when
+        do {
+            try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
+            // then
+            XCTAssertEqual(argument, sut)
+            XCTAssertEqual(token, value)
+            XCTAssertEqual(validChoices.map { $0 as! Int}, choices)
+        } catch {
+            XCTFail("Unexpected error")
+        }
+    }
+    
+    func testThatItParsesAValueThatIsInTheChoices() {
+        
+        // given
+        let sut = OptionalArgument<Int>("--foo", choices: [2,4,8,16])
+        
+        // when
+        if let parsed = try! sut.parseValue("4") as? Int {
+            
+            // then
+            XCTAssertEqual(parsed, 4)
+        }
+        else {
+            XCTFail()
+        }
     }
 }
 
 // MARK: - Types
 
-extension CommandLineArgumentTests {
-
+extension OptionalArgumentTests {
+    
     func testThatTheExpectedTypesMatches() {
-        XCTAssertTrue(PositionalArgument<Int>("foo").expectedType == Int.self)
-        XCTAssertTrue(PositionalArgument<Bool>("foo").expectedType == Bool.self)
+        XCTAssertTrue(OptionalArgument<Int>("foo").expectedType == Int.self)
+        XCTAssertTrue(OptionalArgument<Bool>("foo").expectedType == Bool.self)
         XCTAssertTrue(OptionalArgument<String>("--foo").expectedType == String.self)
     }
 }
 
-// MARK: - Help
-
-extension CommandLineArgumentTests {
-    
-    func testThatHelpArgumentHasDefaultLabelAndHelpText() {
-        
-        //when
-        let sut = HelpArgument()
-        
-        // then
-        XCTAssertEqual(sut.label, "--help")
-        XCTAssertEqual(sut.shortLabel, "-h")
-        XCTAssertEqual(sut.help, "show this help message and exit")
-    }
-}
