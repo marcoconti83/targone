@@ -38,7 +38,7 @@ import Foundation
  do.swift file
  
  */
-public class PositionalArgument<T where T: InitializableFromString> : TypedCommandLineArgument<T> {
+public class PositionalArgument<T> : TypedCommandLineArgument<T> where T: InitializableFromString {
     
     /**
      Returns a positional argument.
@@ -60,14 +60,14 @@ public class PositionalArgument<T where T: InitializableFromString> : TypedComma
     {
         try super.init(
             label: label.removeFlagPrefix(),
-            style: .Positional,
+            style: .positional,
             defaultValue: defaultValue,
             help: help,
             choices: choices
         )
         
         if label.isFlagStyle() {
-            throw ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional
+            throw ArgumentInitError.labelCanNotBeFlagIfArgumentIsPositional
         }
     }
     
