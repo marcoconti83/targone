@@ -28,11 +28,11 @@ import XCTest
 class ArgumentParserTests: XCTestCase {
     
     /// Argument label with description
-    private static func argumentDescription(label: String, description: String) -> String {
+    fileprivate static func argumentDescription(_ label: String, description: String) -> String {
         let Padding = 30
         let needsPadding = label.characters.count < Padding
         let paddedFirstColumn = needsPadding ?
-            label.stringByPaddingToLength(Padding, withString: " ", startingAtIndex: 0) :
+            label.padding(toLength: Padding, withPad: " ", startingAt: 0) :
             label + " "
         return "\t" + paddedFirstColumn + description
     }
@@ -58,7 +58,7 @@ extension ArgumentParserTests {
             "optional arguments:",
             ArgumentParserTests.helpArgumentDescription,
             ""
-            ].joinWithSeparator("\n")
+            ].joined(separator: "\n")
         
         // when
         let sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -103,7 +103,7 @@ extension ArgumentParserTests {
             "optional arguments:",
             ArgumentParserTests.helpArgumentDescription,
             ""
-        ].joinWithSeparator("\n")
+        ].joined(separator: "\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -153,7 +153,7 @@ extension ArgumentParserTests {
             ArgumentParserTests.helpArgumentDescription,
             ArgumentParserTests.argumentDescription("--source SOURCE", description: "An input file"),
             ""
-            ].joinWithSeparator("\n")
+            ].joined(separator: "\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -187,7 +187,7 @@ extension ArgumentParserTests {
             ArgumentParserTests.helpArgumentDescription,
             ArgumentParserTests.argumentDescription("--source SOURCE", description: "An input file"),
             ""
-            ].joinWithSeparator("\n")
+            ].joined(separator: "\n")
         
         // when
         var sut = try! ArgumentParser(arguments: [], summary: summary, processName: name)
@@ -211,9 +211,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
         // when
-        parser.parse(["12"]) { error in
+        _ = parser.parse(["12"]) { error in
             switch(error) {
-            case ArgumentParsingError.TooFewArguments:
+            case ArgumentParsingError.tooFewArguments:
                 break
             default:
                 XCTFail("Unexpected error \(error)")
@@ -230,9 +230,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument, summary: "Parser")
         
         // when
-        parser.parse(["--foo",value]) { error in
+        _ = parser.parse(["--foo",value]) { error in
             switch(error) {
-            case CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token):
+            case CommandLineArgumentParsingError.notInChoices(let argument, let validChoices, let token):
                 XCTAssertEqual(argument.label, "--foo")
                 XCTAssertEqual(validChoices.map { $0 as! Int}, choices)
                 XCTAssertEqual(token, value)
@@ -251,9 +251,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument, summary: "Parser")
         
         // when
-        parser.parse([value]) { error in
+        _ = parser.parse([value]) { error in
             switch(error) {
-            case CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token):
+            case CommandLineArgumentParsingError.notInChoices(let argument, let validChoices, let token):
                 XCTAssertEqual(argument.label, "foo")
                 XCTAssertEqual(token, value)
                 XCTAssertEqual(choices, validChoices.map { $0 as! Int })
@@ -270,9 +270,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, summary: "Parser")
         
         // when
-        parser.parse(["--foo"]) { error in
+        _ = parser.parse(["--foo"]) { error in
             switch(error) {
-            case ArgumentParsingError.ParameterExpectedAfterToken(let previousToken):
+            case ArgumentParsingError.parameterExpectedAfterToken(let previousToken):
                 XCTAssertEqual(previousToken, "--foo")
             default:
                 XCTFail("Unexpected error \(error)")
@@ -288,9 +288,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
         // when
-        parser.parse(["--foo","--bar"]) { error in
+        _ = parser.parse(["--foo","--bar"]) { error in
             switch(error) {
-            case ArgumentParsingError.ParameterExpectedAfterToken(let previousToken):
+            case ArgumentParsingError.parameterExpectedAfterToken(let previousToken):
                 XCTAssertEqual(previousToken, "--foo")
             default:
                 XCTFail("Unexpected error \(error)")
@@ -306,9 +306,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
         // when
-        parser.parse(["--foo","12", "--bar"]) { error in
+        _ = parser.parse(["--foo","12", "--bar"]) { error in
             switch(error) {
-            case ArgumentParsingError.UnexpectedPositionalArgument(let token):
+            case ArgumentParsingError.unexpectedPositionalArgument(let token):
                 XCTAssertEqual(token, "12")
             default:
                 XCTFail("Unexpected error \(error)")
@@ -324,9 +324,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
         // when
-        parser.parse(["--foo","12.4"]) { error in
+        _ = parser.parse(["--foo","12.4"]) { error in
             switch(error) {
-            case CommandLineArgumentParsingError.InvalidType(let argument, let token):
+            case CommandLineArgumentParsingError.invalidType(let argument, let token):
                 XCTAssertEqual(token, "12.4")
                 XCTAssertEqual(argument.label, "--foo")
             default:
@@ -343,9 +343,9 @@ extension ArgumentParserTests {
         let parser = ArgumentParser(argument1, argument2, summary: "Parser")
         
         // when
-        parser.parse(["--foo"]) { error in
+        _ = parser.parse(["--foo"]) { error in
             switch(error) {
-            case ArgumentParsingError.TooFewArguments:
+            case ArgumentParsingError.tooFewArguments:
                 break
             default:
                 XCTFail("Unexpected error \(error)")
@@ -465,39 +465,39 @@ extension ArgumentParserTests {
     func testThatItCallsStandardShortHelpHandler() {
         
         // given
-        let expectation = self.expectationWithDescription("Help function called")
+        let expectation = self.expectation(description: "Help function called")
         let parser = try! ArgumentParser(arguments: [OptionalArgument<Int>("--boo")], helpRequestHandler: {
             expectation.fulfill()
         })
         
         // when
-        parser.parse(["-h"])
+        _ = parser.parse(["-h"])
         
         // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        self.waitForExpectations(timeout: 0, handler: nil)
         
     }
     
     func testThatItCallsStandardLongHelpHandler() {
         
         // given
-        let expectation = self.expectationWithDescription("Help function called")
+        let expectation = self.expectation(description: "Help function called")
         let parser = try! ArgumentParser(arguments: [OptionalArgument<Int>("--boo")], helpRequestHandler: {
             expectation.fulfill()
         })
         
         // when
-        parser.parse(["--help"])
+        _ = parser.parse(["--help"])
         
         // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        self.waitForExpectations(timeout: 0, handler: nil)
         
     }
     
     func testThatItCallsCustomShortHelpHandler() {
         
         // given
-        let expectation = self.expectationWithDescription("Help function called")
+        let expectation = self.expectation(description: "Help function called")
         let parser = try! ArgumentParser(arguments: [OptionalArgument<Int>("--boo")],
             helpArgument: HelpArgument(label: "foo", shortLabel: "f"),
             helpRequestHandler: {
@@ -506,16 +506,16 @@ extension ArgumentParserTests {
         )
         
         // when
-        parser.parse(["-f"])
+        _ = parser.parse(["-f"])
         
         // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        self.waitForExpectations(timeout: 0, handler: nil)
     }
     
     func testThatItCallsCustomLongHelpHandler() {
         
         // given
-        let expectation = self.expectationWithDescription("Help function called")
+        let expectation = self.expectation(description: "Help function called")
         let parser = try! ArgumentParser(arguments: [OptionalArgument<Int>("--boo")],
             helpArgument: HelpArgument(label: "foo", shortLabel: "f"),
             helpRequestHandler: {
@@ -524,10 +524,10 @@ extension ArgumentParserTests {
         )
         
         // when
-        parser.parse(["--foo"])
+        _ = parser.parse(["--foo"])
         
         // then
-        self.waitForExpectationsWithTimeout(0, handler: nil)
+        self.waitForExpectations(timeout: 0, handler: nil)
         
     }
     
@@ -545,7 +545,7 @@ extension ArgumentParserTests {
         // when
         do {
             let _ = try ArgumentParser(arguments: [arg1, arg2])
-        } catch ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(let label) {
+        } catch ArgumentParserInitError.moreThanOneArgumentWithSameLabel(let label) {
             XCTAssertEqual(label, "-f")
         } catch {
             XCTFail("Unexpected error")
@@ -561,7 +561,7 @@ extension ArgumentParserTests {
         // when
         do {
             let _ = try ArgumentParser(arguments: [arg1, arg2])
-        } catch ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(let label) {
+        } catch ArgumentParserInitError.moreThanOneArgumentWithSameLabel(let label) {
             XCTAssertEqual(label, "--foo")
         } catch {
             XCTFail("Unexpected error")
@@ -578,7 +578,7 @@ extension ArgumentParserTests {
         // when
         do {
             try parser.addArgument(argument: arg2)
-        } catch ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(let label) {
+        } catch ArgumentParserInitError.moreThanOneArgumentWithSameLabel(let label) {
             XCTAssertEqual(label, "-f")
         } catch {
             XCTFail("Unexpected error")
