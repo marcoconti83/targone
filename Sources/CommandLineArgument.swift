@@ -254,7 +254,7 @@ public class TypedCommandLineArgument<T> : CommandLineArgument where T : Initial
         return CommandLineArgumentParsingError.invalidType(argument: self, token: token)
     }
     
-    init<Type>(
+    override init<Type>(
         label: String,
         style: ArgumentStyle,
         shortLabel: String? = nil,
