@@ -42,11 +42,11 @@ extension ArgumentStyle {
     /// Returns whether the style requires a flag-like label
     func hasFlagLikeName() -> Bool {
         switch(self) {
-        case Optional:
+        case .Optional:
             return true
-        case Flag:
+        case .Flag:
             return true
-        case Help:
+        case .Help:
             return true
         case .Positional:
             return false
@@ -56,9 +56,9 @@ extension ArgumentStyle {
     /// Returns whether the style requires an additional value
     func requiresAdditionalValue() -> Bool {
         switch(self) {
-        case Optional:
+        case .Optional:
             return true
-        case Flag:
+        case .Flag:
             return false
         case .Positional:
             return false
@@ -70,9 +70,9 @@ extension ArgumentStyle {
     /// Returns whether the style requires to specify a value 
     func requiresValue() -> Bool {
         switch(self) {
-        case Optional:
+        case .Optional:
             return true
-        case Flag:
+        case .Flag:
             return false
         case .Positional:
             return true

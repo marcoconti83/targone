@@ -15,8 +15,8 @@ public struct ErrorReporting
     public static let ReturnCodeForUnrecoverableError : Int32 = 2
     
     /// Prints out the error and exits with status 'ReturnCodeForUnrecoverableError'
-    @noreturn static func die(error: Any...)  {
-        let errorString = error.map { String($0) }.joinWithSeparator(" ")
+    static func die(_ error: Any...) -> Never   {
+        let errorString = error.map { String(describing: $0) }.joined(separator: " ")
         print("Fatal Targone usage error in script: ", errorString)
         exit(ReturnCodeForUnrecoverableError)
     }

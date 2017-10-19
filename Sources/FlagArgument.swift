@@ -60,8 +60,8 @@ public class FlagArgument : TypedCommandLineArgument<Bool> {
             label: label.addLongFlagPrefix(),
             style: ArgumentStyle.Flag,
             shortLabel: shortLabel?.addShortFlagPrefix(),
-            help : help,
-            defaultValue : false
+            defaultValue : false,
+            help : help
         )
     }
     

@@ -11,7 +11,7 @@ import Foundation
 extension Array where Element : CommandLineArgument {
     
     /// Filter arguments by type
-    private func filterByType(type: ArgumentStyle) -> [CommandLineArgument] {
+    fileprivate func filter(type: ArgumentStyle) -> [CommandLineArgument] {
         return self.filter { $0.style == type }
     }
 }
@@ -33,7 +33,7 @@ struct ParsingStatus {
     var parsedArguments = [String : Any]()
     
     /// next token generator
-    private var generator : IndexingGenerator<[String]>
+    private var generator : IndexingIterator<[String]>
     
     init(expectedArguments: [CommandLineArgument], tokensToParse: [String]) throws {
         var lookupByOptionalLabel : [String : CommandLineArgument] = [:]
@@ -41,10 +41,10 @@ struct ParsingStatus {
         self.argumentLookupByOptionalLabel = lookupByOptionalLabel
         
         for argumentType in [ArgumentStyle.Flag, ArgumentStyle.Optional] {
-            nonPositionalArgumentsStillToParse[argumentType] = Set(expectedArguments.filterByType(argumentType))
+            nonPositionalArgumentsStillToParse[argumentType] = Set(expectedArguments.filter(type: argumentType))
         }
-        self.positionalArgumentsStillToParse = expectedArguments.filterByType(.Positional)
-        self.generator = tokensToParse.generate()
+        self.positionalArgumentsStillToParse = expectedArguments.filter(type: .Positional)
+        self.generator = tokensToParse.makeIterator()
         
         try self.startParsing()
     }
@@ -78,14 +78,14 @@ struct ParsingStatus {
     }
     
     /// Set the parsed value for the argument
-    private mutating func setParsedValue(value: Any, argument: CommandLineArgument) {
+    private mutating func setParsedValue(_ value: Any, argument: CommandLineArgument) {
         argument.allLabels.forEach {
             self.parsedArguments[$0] = value
         }
     }
     
     /// parse a specific token
-    private mutating func parseToken(token: String) throws {
+    private mutating func parseToken(_ token: String) throws {
         // what kind of argument?
         if let argument = self.argumentLookupByOptionalLabel[token] {
             switch(argument.style) {
@@ -96,7 +96,7 @@ struct ParsingStatus {
             default:
                 ErrorReporting.die("Was not expecting this type of argument: \(argument.style)")
             }
-            if let parsed = try self.parseFlagStyleArgument(argument) {
+            if let parsed = try self.parseFlagStyleArgument(argument: argument) {
                 parsedArguments[argument.label] = parsed
             }
         }
@@ -104,7 +104,7 @@ struct ParsingStatus {
             // positional
             guard let positional = self.positionalArgumentsStillToParse.first else { throw ArgumentParsingError.UnexpectedPositionalArgument(token: token) }
             self.positionalArgumentsStillToParse.removeFirst()
-            if let parsedValue = try self.parsePositionalArgument(positional, token: token) {
+            if let parsedValue = try self.parsePositionalArgument(argument: positional, token: token) {
                 positional.allLabels.forEach { parsedArguments[$0] = parsedValue }
             }
         }
@@ -114,7 +114,7 @@ struct ParsingStatus {
     private mutating func parseFlagStyleArgument(argument: CommandLineArgument) throws -> Any? {
         if argument.style.requiresAdditionalValue() {
             // optional
-            guard let followingToken = self.generator.next() where !followingToken.isFlagStyle()
+            guard let followingToken = self.generator.next(), !followingToken.isFlagStyle()
                 else { throw ArgumentParsingError.ParameterExpectedAfterToken(previousToken: argument.label) }
             return try argument.parseValue(followingToken)
         } else {

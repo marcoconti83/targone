@@ -37,7 +37,7 @@ import Foundation
  do.swift --speed 10
  
  */
-public class OptionalArgument<T where T: InitializableFromString> : TypedCommandLineArgument<T> {
+public class OptionalArgument<T> : TypedCommandLineArgument<T> where T: InitializableFromString {
     
     /**
      Returns an optional argument.
@@ -64,8 +64,8 @@ public class OptionalArgument<T where T: InitializableFromString> : TypedCommand
             style: ArgumentStyle.Optional,
             shortLabel: shortLabel?.addShortFlagPrefix(),
             defaultValue : defaultValue,
-            choices: choices,
-            help : help
+            help : help,
+            choices: choices
         )
     }
     

@@ -199,7 +199,7 @@ extension OptionalArgumentTests {
         let label = "--foo"
         let help = "This is the help"
         let choices = [34,45,675]
-        let choicesDescription = choices.map {"'\($0)'"}.joinWithSeparator(" | ")
+        let choicesDescription = choices.map {"'\($0)'"}.joined(separator: " | ")
         let sut = OptionalArgument<Int>(label, help: help, choices: choices)
         
         let expected = "\(label) \(label.placeholderArgumentString())<Int>                \(help)\n\t\tPossible values: \(choicesDescription)"
@@ -241,7 +241,7 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -289,7 +289,7 @@ extension OptionalArgumentTests {
         // when
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -340,7 +340,7 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -358,7 +358,7 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ =  try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
             // then
             XCTAssertEqual(argument, sut)

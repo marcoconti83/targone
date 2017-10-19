@@ -38,7 +38,7 @@ import Foundation
  do.swift file
  
  */
-public class PositionalArgument<T where T: InitializableFromString> : TypedCommandLineArgument<T> {
+public class PositionalArgument<T> : TypedCommandLineArgument<T> where T: InitializableFromString {
     
     /**
      Returns a positional argument.

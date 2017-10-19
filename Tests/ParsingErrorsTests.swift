@@ -105,7 +105,7 @@ extension ParsingErrorsTests {
         let description = sut.description
         
         // then
-        let choicesDescription = choices.map({ "'\($0)'" }).joinWithSeparator(", ")
+        let choicesDescription = choices.map({ "'\($0)'" }).joined(separator: ", ")
         XCTAssertEqual(description, "argument \(argument.label): '\(token)' is not in the list of possible choices: \(choicesDescription)")
         
     }

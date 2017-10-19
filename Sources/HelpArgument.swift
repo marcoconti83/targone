@@ -57,8 +57,8 @@ public class HelpArgument : CommandLineArgument {
                 label: label.addLongFlagPrefix(),
                 style: ArgumentStyle.Help,
                 shortLabel: shortLabel?.addShortFlagPrefix(),
-                help : help,
-                defaultValue: false
+                defaultValue: false,
+                help : help
             )
     }
     

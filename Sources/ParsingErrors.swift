@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Error during initialization or when adding an additional argument to a parser
-public enum ArgumentParserInitError : ErrorType, CustomStringConvertible {
+public enum ArgumentParserInitError : Error, CustomStringConvertible {
     
     /// There is more than one argument with the same label
     case MoreThanOneArgumentWithSameLabel(label: String)
@@ -25,7 +25,7 @@ public enum ArgumentParserInitError : ErrorType, CustomStringConvertible {
 
 
 /// Error in parsing argument
-public enum CommandLineArgumentParsingError : ErrorType, CustomStringConvertible {
+public enum CommandLineArgumentParsingError : Error, CustomStringConvertible {    
     
     /// The token does not parse to the expected type
     case InvalidType(argument: CommandLineArgument, token: String)
@@ -38,7 +38,7 @@ public enum CommandLineArgumentParsingError : ErrorType, CustomStringConvertible
         case .InvalidType(let argument, let token):
             return "argument \(argument.label): invalid \(argument.expectedType) value: \(token)"
         case .NotInChoices(let argument, let validChoices, let token):
-            let choices = validChoices.map { "'\($0)'" }.joinWithSeparator(", ")
+            let choices = validChoices.map { "'\($0)'" }.joined(separator: ", ")
             return "argument \(argument.label): '\(token)' is not in the list of possible choices: \(choices)"
         }
     }
@@ -46,7 +46,7 @@ public enum CommandLineArgumentParsingError : ErrorType, CustomStringConvertible
 
 
 /// Error in parsing tokens from command line
-public enum ArgumentParsingError : ErrorType, CustomStringConvertible {
+public enum ArgumentParsingError : Error, CustomStringConvertible {
     
     /// The previous token requires a parameter, but there is no following valid token
     case ParameterExpectedAfterToken(previousToken: String)

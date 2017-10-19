@@ -157,7 +157,7 @@ extension ArgumentParser {
     }
     
     /// Adds an argument to the list of arguments expected by the parser. This is the arror-
-    public mutating func addArgument(argumentDefinition: CommandLineArgument) {
+    public mutating func addArgument(_ argumentDefinition: CommandLineArgument) {
         self.expectedArguments.append(argumentDefinition)
         do {
             try self.validateArguments()
@@ -208,7 +208,7 @@ extension ArgumentParser : CustomStringConvertible {
         
         /// Outputs the argument list
         func outputArguments(styles : [ArgumentStyle], label: String) {
-            let filteredArguments = ([self.helpArgument] + expectedArguments).filter { styles.contains($0.style) }.sort {$0.label < $1.label}
+            let filteredArguments = ([self.helpArgument] + expectedArguments).filter { styles.contains($0.style) }.sorted {$0.label < $1.label}
             if(filteredArguments.count > 0) {
                 output += "\n\(label) arguments:"
                 filteredArguments.forEach { output += "\n\t\($0)" }
@@ -216,15 +216,15 @@ extension ArgumentParser : CustomStringConvertible {
             }
         }
 
-        outputArguments([.Positional], label: "positional")
-        outputArguments([.Help, .Optional, .Flag], label: "optional")
+        outputArguments(styles: [.Positional], label: "positional")
+        outputArguments(styles: [.Help, .Optional, .Flag], label: "optional")
             
         return output
     }
     
     /// Returns a compact description of the arguments, as it is expected to be displayed in the usage string
     private static func usageArgumentDescription(arguments: [CommandLineArgument]) -> String{
-        return arguments.reduce("", combine: {
+        return arguments.reduce("", {
             var output = $0.characters.count > 0 ? " " : ""
             let label = $1.compactLabelWithExpectedValue
             if $1.isOptional {
@@ -242,10 +242,10 @@ extension ArgumentParser : CustomStringConvertible {
         
         let usage = "usage: \(self.scriptName)"
         
-        let flagsOutput = ArgumentParser.usageArgumentDescription([self.helpArgument] + self.flagAndOptionalArguments)
-        let positionalOutput = ArgumentParser.usageArgumentDescription(self.positionalArguments)
+        let flagsOutput = ArgumentParser.usageArgumentDescription(arguments: [self.helpArgument] + self.flagAndOptionalArguments)
+        let positionalOutput = ArgumentParser.usageArgumentDescription(arguments: self.positionalArguments)
         
-        return [usage, flagsOutput, positionalOutput].filter { $0.characters.count > 0 } .joinWithSeparator(" ")
+        return [usage, flagsOutput, positionalOutput].filter { $0.characters.count > 0 } .joined(separator: " ")
     }
 }
 
@@ -254,16 +254,18 @@ extension ArgumentParser : CustomStringConvertible {
 extension ArgumentParser {
     
     /// Returns the name of the script currently run by command line
-    private static func currentScriptName() -> String {
-        guard let scriptPath = Process.arguments.first else { return "" }
-        let scriptURL = NSURL(fileURLWithPath: scriptPath)
-        return scriptURL.lastPathComponent ?? ""
+    public static func currentScriptName() -> String { // TODO: change back to private, see https://bugs.swift.org/browse/SR-5111
+        let arguments = ProcessInfo().arguments
+        guard let scriptPath = arguments.first else { return "" }
+        let scriptURL = URL(fileURLWithPath: scriptPath)
+        return scriptURL.lastPathComponent
     }
     
     /// Returns the current process arguments, starting from the second one (i.e. excludes the script name)
-    private static func processArguments() -> [String] {
-        let size = Process.arguments.count
-        return Array(Process.arguments[1..<size])
+    public static func processArguments() -> [String] { // TODO: change back to private, see https://bugs.swift.org/browse/SR-5111
+        let arguments = ProcessInfo().arguments
+        guard arguments.count > 1 else { return [String]() }
+        return Array(arguments[1..<arguments.count])
     }
 }
 
@@ -271,17 +273,17 @@ extension ArgumentParser {
 
 extension ArgumentParser {
     
-    public typealias ParsingErrorHandler = (error: ErrorType)->()
+    public typealias ParsingErrorHandler = (_ error: Error)->()
 
     /// Prints compact usage and exits with status 1
-    @noreturn private func printUsageAndExit(error: ErrorType)  {
+    private func printUsageAndExit(_ error: Error) -> Never   {
         print(self.shortDescription)
         print("\(self.scriptName): error: \(error)")
         exit(1)
     }
     
     /// Prints usage and exits with status 0
-    @noreturn private func printHelpAndExit() {
+    private func printHelpAndExit() -> Never  {
         print(self.description)
         exit(0)
     }
@@ -295,12 +297,12 @@ extension ArgumentParser {
      - returns: the result of the parsing
      */
     public func parse(
-        commandLineTokens: [String] = ArgumentParser.processArguments(),
+        _ commandLineTokens: [String] = ArgumentParser.processArguments(),
         parsingErrorHandler : ParsingErrorHandler? = nil
     ) -> ParsingResult {
 
         // is the first parameter the help parameter?
-        if let firstToken = commandLineTokens.first where self.helpArgument.allLabels.contains(firstToken) {
+        if let firstToken = commandLineTokens.first, self.helpArgument.allLabels.contains(firstToken) {
             if let helpHandler = self.helpHandler {
                 helpHandler()
             } else {

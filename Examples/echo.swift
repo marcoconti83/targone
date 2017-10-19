@@ -29,8 +29,8 @@
 import Targone
 
 let transformMapping = [
-	"upper" : { (s: String) -> String in s.uppercaseString },
-	"lower" : { (s: String) -> String in s.lowercaseString }
+	"upper" : { (s: String) -> String in s.uppercased },
+	"lower" : { (s: String) -> String in s.lowercased }
 ]
 
 // Define parser

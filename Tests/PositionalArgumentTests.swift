@@ -142,7 +142,7 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
@@ -191,7 +191,7 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
@@ -243,7 +243,7 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
@@ -262,7 +262,7 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
+            _ = try sut.parseValue(value)
         } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
             // then
             XCTAssertEqual(argument, sut)
