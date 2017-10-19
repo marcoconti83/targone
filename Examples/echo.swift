@@ -26,6 +26,13 @@
 // THE SOFTWARE.
 
 
+// INSTRUCTIONS: 
+// before running this script, make sure to run
+//      carthage build --no-skip-current
+// from the project folder. Then you can invoke it **from the project folder** using
+//  ./Examples/echo.swift
+//
+
 import Targone
 
 let transformMapping = [
