@@ -10,14 +10,14 @@ import Foundation
 
 
 /// Error during initialization or when adding an additional argument to a parser
-public enum ArgumentParserInitError : ErrorType, CustomStringConvertible {
+public enum ArgumentParserInitError : Error, CustomStringConvertible {
     
     /// There is more than one argument with the same label
-    case MoreThanOneArgumentWithSameLabel(label: String)
+    case moreThanOneArgumentWithSameLabel(label: String)
     
     public var description : String {
         switch(self) {
-        case .MoreThanOneArgumentWithSameLabel(let label):
+        case .moreThanOneArgumentWithSameLabel(let label):
             return "more than one argument with the same label '\(label)'"
         }
     }
@@ -25,20 +25,20 @@ public enum ArgumentParserInitError : ErrorType, CustomStringConvertible {
 
 
 /// Error in parsing argument
-public enum CommandLineArgumentParsingError : ErrorType, CustomStringConvertible {
+public enum CommandLineArgumentParsingError : Error, CustomStringConvertible {
     
     /// The token does not parse to the expected type
-    case InvalidType(argument: CommandLineArgument, token: String)
+    case invalidType(argument: CommandLineArgument, token: String)
     
     /// The value is not in the list of possible choices
-    case NotInChoices(argument: CommandLineArgument, validChoices: [Any], token: String)
+    case notInChoices(argument: CommandLineArgument, validChoices: [Any], token: String)
     
     public var description : String {
         switch(self) {
-        case .InvalidType(let argument, let token):
+        case .invalidType(let argument, let token):
             return "argument \(argument.label): invalid \(argument.expectedType) value: \(token)"
-        case .NotInChoices(let argument, let validChoices, let token):
-            let choices = validChoices.map { "'\($0)'" }.joinWithSeparator(", ")
+        case .notInChoices(let argument, let validChoices, let token):
+            let choices = validChoices.map { "'\($0)'" }.joined(separator: ", ")
             return "argument \(argument.label): '\(token)' is not in the list of possible choices: \(choices)"
         }
     }
@@ -46,24 +46,24 @@ public enum CommandLineArgumentParsingError : ErrorType, CustomStringConvertible
 
 
 /// Error in parsing tokens from command line
-public enum ArgumentParsingError : ErrorType, CustomStringConvertible {
+public enum ArgumentParsingError : Error, CustomStringConvertible {
     
     /// The previous token requires a parameter, but there is no following valid token
-    case ParameterExpectedAfterToken(previousToken: String)
+    case parameterExpectedAfterToken(previousToken: String)
     
     /// Unexpected positional arguments. No more positional arguments were expected
-    case UnexpectedPositionalArgument(token: String)
+    case unexpectedPositionalArgument(token: String)
     
     /// Too few arguments
-    case TooFewArguments
+    case tooFewArguments
     
     public var description : String {
         switch(self) {
-        case .ParameterExpectedAfterToken(let previousToken):
+        case .parameterExpectedAfterToken(let previousToken):
             return "argument \(previousToken): expected one argument"
-        case .UnexpectedPositionalArgument(let token):
+        case .unexpectedPositionalArgument(let token):
             return "unrecognized parameter: \(token)"
-        case .TooFewArguments:
+        case .tooFewArguments:
             return "too few arguments"
         }
     }

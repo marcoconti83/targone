@@ -66,10 +66,10 @@ extension String {
     /// Returns `self` without the flag prefix ("--" or "-")
     func removeFlagPrefix() -> String {
         if(self.isLongFlagStyle()) {
-            return self.substringFromIndex(self.startIndex.advancedBy(2))
+            return self.substring(from: self.characters.index(self.startIndex, offsetBy: 2))
         }
         if(self.isShortFlagStyle()) {
-            return self.substringFromIndex(self.startIndex.advancedBy(1))
+            return self.substring(from: self.characters.index(self.startIndex, offsetBy: 1))
         }
         return self
     }
@@ -89,7 +89,7 @@ extension String {
     func placeholderArgumentString() -> String {
         var output = self.removeFlagPrefix()
         output = String(output.characters.map { $0 == "-" ? "_" : $0 })
-        return output.uppercaseString
+        return output.uppercased()
     }
     
     /**
@@ -109,21 +109,22 @@ extension String {
         }
         
         // does it have spaces?
-        if let _ = withoutPrefix.rangeOfCharacterFromSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) {
+        if let _ = withoutPrefix.rangeOfCharacter(from: CharacterSet.whitespacesAndNewlines) {
             return false
         }
         
         // does it start with letter?
-        let firstLetterCharacterSet = NSMutableCharacterSet.letterCharacterSet()
-        firstLetterCharacterSet.addCharactersInString("_")
-        if !firstLetterCharacterSet.characterIsMember(withoutPrefix.utf16.first!) {
+        var firstLetterCharacterSet = CharacterSet.letters
+        firstLetterCharacterSet.insert(charactersIn: "_")
+        
+        if !firstLetterCharacterSet.contains(UnicodeScalar(withoutPrefix.utf16.first!)!) {
             return false
         }
         
         // does it contains only alphanumeric and _ and -?
-        let validCharacterSet = NSMutableCharacterSet.alphanumericCharacterSet()
-        validCharacterSet.addCharactersInString("-_")
-        if let _ = withoutPrefix.rangeOfCharacterFromSet(validCharacterSet.invertedSet) {
+        var validCharacterSet = CharacterSet.alphanumerics
+        validCharacterSet.insert(charactersIn: "-_")
+        if let _ = withoutPrefix.rangeOfCharacter(from: validCharacterSet.inverted) {
             return false
         }
         

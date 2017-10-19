@@ -91,7 +91,7 @@ extension HelpArgumentTests {
         do {
             _ = try HelpArgument(label: "--number", shortLabel: "--number")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.ShortLabelCanNotBeLongFlag{
+        } catch ArgumentInitError.shortLabelCanNotBeLongFlag{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -113,7 +113,7 @@ extension HelpArgumentTests {
         do {
             _ = try HelpArgument(label: "-n  ds")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.InvalidLabel{
+        } catch ArgumentInitError.invalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -126,7 +126,7 @@ extension HelpArgumentTests {
         do {
             _ = try HelpArgument(label: "--num", shortLabel: "-n s")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.InvalidLabel{
+        } catch ArgumentInitError.invalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
