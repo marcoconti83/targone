@@ -28,23 +28,23 @@ import XCTest
 class ArgumentStyleTests : XCTestCase {
     
     func testThatItHasFlagLikeName() {
-        XCTAssertFalse(ArgumentStyle.Positional.hasFlagLikeName())
-        XCTAssertTrue(ArgumentStyle.Optional.hasFlagLikeName())
-        XCTAssertTrue(ArgumentStyle.Flag.hasFlagLikeName())
-        XCTAssertTrue(ArgumentStyle.Help.hasFlagLikeName())
+        XCTAssertFalse(ArgumentStyle.positional.hasFlagLikeName())
+        XCTAssertTrue(ArgumentStyle.optional.hasFlagLikeName())
+        XCTAssertTrue(ArgumentStyle.flag.hasFlagLikeName())
+        XCTAssertTrue(ArgumentStyle.help.hasFlagLikeName())
     }
     
     func testThatItRequiresAdditionalValues() {
-        XCTAssertFalse(ArgumentStyle.Positional.requiresAdditionalValue())
-        XCTAssertTrue(ArgumentStyle.Optional.requiresAdditionalValue())
-        XCTAssertFalse(ArgumentStyle.Flag.requiresAdditionalValue())
-        XCTAssertFalse(ArgumentStyle.Help.requiresAdditionalValue())
+        XCTAssertFalse(ArgumentStyle.positional.requiresAdditionalValue())
+        XCTAssertTrue(ArgumentStyle.optional.requiresAdditionalValue())
+        XCTAssertFalse(ArgumentStyle.flag.requiresAdditionalValue())
+        XCTAssertFalse(ArgumentStyle.help.requiresAdditionalValue())
     }
     
     func testThatItRequiresValue() {
-        XCTAssertTrue(ArgumentStyle.Positional.requiresValue())
-        XCTAssertTrue(ArgumentStyle.Optional.requiresValue())
-        XCTAssertFalse(ArgumentStyle.Flag.requiresValue())
-        XCTAssertFalse(ArgumentStyle.Help.requiresValue())
+        XCTAssertTrue(ArgumentStyle.positional.requiresValue())
+        XCTAssertTrue(ArgumentStyle.optional.requiresValue())
+        XCTAssertFalse(ArgumentStyle.flag.requiresValue())
+        XCTAssertFalse(ArgumentStyle.help.requiresValue())
     }
 }

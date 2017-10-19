@@ -91,7 +91,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "--number", shortLabel: "--number")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.ShortLabelCanNotBeLongFlag{
+        } catch ArgumentInitError.shortLabelCanNotBeLongFlag{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -113,7 +113,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "-n  ds")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.InvalidLabel{
+        } catch ArgumentInitError.invalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -126,7 +126,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "--num", shortLabel: "-n s")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.InvalidLabel{
+        } catch ArgumentInitError.invalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -199,7 +199,7 @@ extension OptionalArgumentTests {
         let label = "--foo"
         let help = "This is the help"
         let choices = [34,45,675]
-        let choicesDescription = choices.map {"'\($0)'"}.joinWithSeparator(" | ")
+        let choicesDescription = choices.map {"'\($0)'"}.joined(separator: " | ")
         let sut = OptionalArgument<Int>(label, help: help, choices: choices)
         
         let expected = "\(label) \(label.placeholderArgumentString())<Int>                \(help)\n\t\tPossible values: \(choicesDescription)"
@@ -241,8 +241,8 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -289,8 +289,8 @@ extension OptionalArgumentTests {
         // when
         // when
         do {
-            try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -340,8 +340,8 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -358,8 +358,8 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.notInChoices(let argument, let validChoices, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)

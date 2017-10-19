@@ -58,10 +58,10 @@ public class FlagArgument : TypedCommandLineArgument<Bool> {
     {
         try super.init(
             label: label.addLongFlagPrefix(),
-            style: ArgumentStyle.Flag,
+            style: ArgumentStyle.flag,
             shortLabel: shortLabel?.addShortFlagPrefix(),
-            help : help,
-            defaultValue : false
+            defaultValue : false,
+            help : help
         )
     }
     

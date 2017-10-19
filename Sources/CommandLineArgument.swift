@@ -28,14 +28,14 @@ import Foundation
 private let OutputFirstColumnPadding = 30
 
 /// Errors in initializing arguments
-public enum ArgumentInitError : ErrorType {
+public enum ArgumentInitError : Error {
 
     /// Can not specify a flag-like label when the argument is not optional
-    case LabelCanNotBeFlagIfArgumentIsPositional
+    case labelCanNotBeFlagIfArgumentIsPositional
     /// Short label (`-n`) can't be a long flag (`--number`)
-    case ShortLabelCanNotBeLongFlag
+    case shortLabelCanNotBeLongFlag
     /// Invalid label
-    case InvalidLabel
+    case invalidLabel
     
 }
 
@@ -44,7 +44,7 @@ public enum ArgumentInitError : ErrorType {
  An argument expected on the command line.
  
  */
-public class CommandLineArgument {
+open class CommandLineArgument {
     
     /// Style of argument
     let style : ArgumentStyle
@@ -70,7 +70,7 @@ public class CommandLineArgument {
     let help : String?
     
     /// List of accepted values, if any
-    private let choices : [Any]?
+    fileprivate let choices : [Any]?
     
     /// The expected type of this parameter
     let expectedType : Any.Type
@@ -88,14 +88,14 @@ public class CommandLineArgument {
      - parameter choices: a list of possible values for the argument. Passing an argument that is not in this list (if the list is specified)
     will result in a parsing error.
      */
-    init<Type where Type : InitializableFromString>(
+    init<Type>(
         label: String,
         style: ArgumentStyle,
         shortLabel: String? = nil,
         defaultValue : Type?? = nil,
         help : String? = nil,
         choices : [Type]? = nil
-        ) throws
+        ) throws where Type : InitializableFromString
     {
         self.label = label
         self.shortLabel = shortLabel
@@ -106,17 +106,17 @@ public class CommandLineArgument {
         self.choices = choices?.map { $0 as Any } // didn't find another way of making the compiler happy about the conversion :(
         
         if self.allLabels.filter({ !$0.isValidArgumentName() }).count > 0 {
-            throw ArgumentInitError.InvalidLabel
+            throw ArgumentInitError.invalidLabel
         }
     
-        if let shortLabel = shortLabel where shortLabel.isLongFlagStyle() {
-            throw ArgumentInitError.ShortLabelCanNotBeLongFlag
+        if let shortLabel = shortLabel , shortLabel.isLongFlagStyle() {
+            throw ArgumentInitError.shortLabelCanNotBeLongFlag
         }
     }
     
     /// Attempts to parse a token matching the argument.
     /// returns `nil` if it was not possible to parse a valid value
-    func parseValue(token: String) throws -> Any? {
+    func parseValue(_ token: String) throws -> Any? {
         return nil
     }
 }
@@ -159,7 +159,7 @@ extension CommandLineArgument {
     /// Whether this argument is optional
     var isOptional : Bool {
         switch(self.style) {
-        case .Positional:
+        case .positional:
             return false
         default:
             return true
@@ -172,7 +172,7 @@ extension CommandLineArgument {
 extension CommandLineArgument : CustomStringConvertible {
 
     /// Returns the type specification needed for the given type
-    private func placeholderArgumentDescription() -> String {
+    fileprivate func placeholderArgumentDescription() -> String {
         if self.style.requiresAdditionalValue() {
             return " "+self.label.placeholderArgumentString()
         }
@@ -180,7 +180,7 @@ extension CommandLineArgument : CustomStringConvertible {
     }
     
     /// Returns the type specifications according to the expected type (none for String, <Type> for any other)
-    private func typeSpecificationDescription() -> String {
+    fileprivate func typeSpecificationDescription() -> String {
         if self.expectedType == String.self || !self.style.requiresValue() {
             return ""
         }
@@ -193,7 +193,7 @@ extension CommandLineArgument : CustomStringConvertible {
     }
 
     /// First line of the description: parameters and help
-    private var firstLineOfDescription : String {
+    fileprivate var firstLineOfDescription : String {
         
         let placeholderArgument = self.placeholderArgumentDescription() + self.typeSpecificationDescription()
         let firstColumn = "\(label)" +
@@ -203,7 +203,7 @@ extension CommandLineArgument : CustomStringConvertible {
         
         let needsPadding = firstColumn.characters.count < OutputFirstColumnPadding
         let paddedFirstColumn = needsPadding ?
-            firstColumn.stringByPaddingToLength(OutputFirstColumnPadding, withString: " ", startingAtIndex: 0) :
+            firstColumn.padding(toLength: OutputFirstColumnPadding, withPad: " ", startingAt: 0) :
             firstColumn + " "
         
         if let secondColumn = secondColumn {
@@ -218,7 +218,7 @@ extension CommandLineArgument : CustomStringConvertible {
     public var description : String {
         
         if let choices = self.choices {
-            let choicesDescription = choices.map { "'\($0)'"}.joinWithSeparator(" | ")
+            let choicesDescription = choices.map { "'\($0)'"}.joined(separator: " | ")
             return self.firstLineOfDescription + "\n\t\t" + "Possible values: " + choicesDescription
         } else {
             return self.firstLineOfDescription
@@ -234,9 +234,9 @@ This intermediate class is needed because CommandLineArgument has to have no gen
 to be able to be stored in collections, but the class needs to have a generic parameter
 to be able to initalize and compare
 */
-public class TypedCommandLineArgument<T where T: InitializableFromString> : CommandLineArgument {
+public class TypedCommandLineArgument<T> : CommandLineArgument where T : InitializableFromString {
     
-    override func parseValue(token: String) throws -> Any? {
+    override func parseValue(_ token: String) throws -> Any? {
         if let parsedValue = T(initializationString: token) {
             if let choices = self.choices {
                 let unwrappedChoices = choices.map { $0 as! T}
@@ -246,22 +246,22 @@ public class TypedCommandLineArgument<T where T: InitializableFromString> : Comm
                     return parsedValue
                 }
                 else {
-                    throw CommandLineArgumentParsingError.NotInChoices(argument: self, validChoices: unwrappedChoices.map { $0 as Any}, token: token)
+                    throw CommandLineArgumentParsingError.notInChoices(argument: self, validChoices: unwrappedChoices.map { $0 as Any}, token: token)
                 }
             }
             return parsedValue
         }
-        return CommandLineArgumentParsingError.InvalidType(argument: self, token: token)
+        return CommandLineArgumentParsingError.invalidType(argument: self, token: token)
     }
     
-    init<Type where Type : InitializableFromString>(
+    override init<Type>(
         label: String,
         style: ArgumentStyle,
         shortLabel: String? = nil,
         defaultValue : Type?? = nil,
         help : String? = nil,
         choices : [Type]? = nil
-        ) throws
+        ) throws where Type : InitializableFromString
     {
         try super.init(
             label: label,
