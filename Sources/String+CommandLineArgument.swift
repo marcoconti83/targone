@@ -66,10 +66,14 @@ extension String {
     /// Returns `self` without the flag prefix ("--" or "-")
     func removeFlagPrefix() -> String {
         if(self.isLongFlagStyle()) {
-            return self.substring(from: self.characters.index(self.startIndex, offsetBy: 2))
+            return String(
+                self[self.characters.index(self.startIndex, offsetBy: 2)...]
+            )
         }
         if(self.isShortFlagStyle()) {
-            return self.substring(from: self.characters.index(self.startIndex, offsetBy: 1))
+            return String(
+                self[self.characters.index(self.startIndex, offsetBy: 1)...]
+            )
         }
         return self
     }

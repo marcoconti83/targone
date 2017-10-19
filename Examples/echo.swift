@@ -36,8 +36,8 @@
 import Targone
 
 let transformMapping = [
-	"upper" : { (s: String) -> String in s.uppercaseString },
-	"lower" : { (s: String) -> String in s.lowercaseString }
+	"upper" : { (s: String) -> String in s.uppercased() },
+	"lower" : { (s: String) -> String in s.lowercased() }
 ]
 
 // Define parser
@@ -49,8 +49,9 @@ parser.addArgument(FlagArgument("quotes", help: "enclose the text within quotes"
 parser.addArgument(OptionalArgument<String>(
 	"transform", 
 	shortLabel: "t", 
-	choices: Array(transformMapping.keys), 
-	help: "Transformation to apply to the text")
+	help: "Transformation to apply to the text",
+	choices: Array(transformMapping.keys)
+	)
 )
 
 let repetitionsArg = OptionalArgument<Int>("num", shortLabel: "n", defaultValue: 1, help: "how many times to print the text")
@@ -67,15 +68,16 @@ let text = args.stringValue("text")!
 let quotes = args.boolValue("quotes")!
 
 // Main script logic
-let transformedText = { _ -> String in
+let transformedText = { () -> String in
 	if let parsed = args.stringValue("transform"), let transform = transformMapping[parsed]  {
 		return transform(text)
 	} else {
 		return text
 	}
 }()
+
 let quotedText = quotes ? "\"\(transformedText)\"" : transformedText
 
-for i in 0..<repetitions {
+(0..<repetitions).forEach { _ in
 	print(quotedText)
 }

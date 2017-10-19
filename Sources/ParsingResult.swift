@@ -89,8 +89,8 @@ public struct ParsingResult {
     /// - warning: it will abort execution and print an error if value is not of the required type
     public func value(_ label: String, type: Any.Type) -> Any? {
         if let value = self.value(label) {
-            if type(of: value) != type {
-                ErrorReporting.die("value for label '\(label)' has actual type '\(type(of: label))' and not requested type '\(type.self)'")
+            if Swift.type(of: value) != type {
+                ErrorReporting.die("value for label '\(label)' has actual type '\(Swift.type(of: label))' and not requested type '\(type.self)'")
             }
             return value
         }

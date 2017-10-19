@@ -89,10 +89,11 @@ extension ArgumentParser {
     public init(
         arguments : [CommandLineArgument],
         summary: String? = nil,
-        processName : String = ArgumentParser.currentScriptName(),
+        processName : String? = nil,
         helpArgument : HelpArgument? = nil,
         helpRequestHandler : (()->())? = nil
         ) throws {
+            let processName = processName ?? ArgumentParser.currentScriptName()
             self.summary = summary
             self.scriptName = processName
             self.expectedArguments = arguments
@@ -254,14 +255,14 @@ extension ArgumentParser : CustomStringConvertible {
 extension ArgumentParser {
     
     /// Returns the name of the script currently run by command line
-    fileprivate static func currentScriptName() -> String {
+    private static func currentScriptName() -> String {
         guard let scriptPath = CommandLine.arguments.first else { return "" }
         let scriptURL = URL(fileURLWithPath: scriptPath)
         return scriptURL.lastPathComponent
     }
     
     /// Returns the current process arguments, starting from the second one (i.e. excludes the script name)
-    fileprivate static func processArguments() -> [String] {
+    private static func processArguments() -> [String] {
         let size = CommandLine.arguments.count
         return Array(CommandLine.arguments[1..<size])
     }
@@ -295,10 +296,11 @@ extension ArgumentParser {
      - returns: the result of the parsing
      */
     public func parse(
-        _ commandLineTokens: [String] = ArgumentParser.processArguments(),
+        _ commandLineTokens: [String]? = nil,
         parsingErrorHandler : ParsingErrorHandler? = nil
     ) -> ParsingResult {
 
+        let commandLineTokens = commandLineTokens ?? ArgumentParser.processArguments()
         // is the first parameter the help parameter?
         if let firstToken = commandLineTokens.first , self.helpArgument.allLabels.contains(firstToken) {
             if let helpHandler = self.helpHandler {
