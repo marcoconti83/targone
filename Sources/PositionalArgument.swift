@@ -60,14 +60,14 @@ public class PositionalArgument<T> : TypedCommandLineArgument<T> where T: Initia
     {
         try super.init(
             label: label.removeFlagPrefix(),
-            style: .positional,
+            style: .Positional,
             defaultValue: defaultValue,
             help: help,
             choices: choices
         )
         
         if label.isFlagStyle() {
-            throw ArgumentInitError.labelCanNotBeFlagIfArgumentIsPositional
+            throw ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional
         }
     }
     

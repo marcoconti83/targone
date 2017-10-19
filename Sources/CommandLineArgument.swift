@@ -31,11 +31,11 @@ private let OutputFirstColumnPadding = 30
 public enum ArgumentInitError : Error {
 
     /// Can not specify a flag-like label when the argument is not optional
-    case labelCanNotBeFlagIfArgumentIsPositional
+    case LabelCanNotBeFlagIfArgumentIsPositional
     /// Short label (`-n`) can't be a long flag (`--number`)
-    case shortLabelCanNotBeLongFlag
+    case ShortLabelCanNotBeLongFlag
     /// Invalid label
-    case invalidLabel
+    case InvalidLabel
     
 }
 
@@ -44,7 +44,7 @@ public enum ArgumentInitError : Error {
  An argument expected on the command line.
  
  */
-open class CommandLineArgument {
+public class CommandLineArgument {
     
     /// Style of argument
     let style : ArgumentStyle
@@ -106,11 +106,11 @@ open class CommandLineArgument {
         self.choices = choices?.map { $0 as Any } // didn't find another way of making the compiler happy about the conversion :(
         
         if self.allLabels.filter({ !$0.isValidArgumentName() }).count > 0 {
-            throw ArgumentInitError.invalidLabel
+            throw ArgumentInitError.InvalidLabel
         }
     
-        if let shortLabel = shortLabel , shortLabel.isLongFlagStyle() {
-            throw ArgumentInitError.shortLabelCanNotBeLongFlag
+        if let shortLabel = shortLabel, shortLabel.isLongFlagStyle() {
+            throw ArgumentInitError.ShortLabelCanNotBeLongFlag
         }
     }
     
@@ -159,7 +159,7 @@ extension CommandLineArgument {
     /// Whether this argument is optional
     var isOptional : Bool {
         switch(self.style) {
-        case .positional:
+        case .Positional:
             return false
         default:
             return true
@@ -172,7 +172,7 @@ extension CommandLineArgument {
 extension CommandLineArgument : CustomStringConvertible {
 
     /// Returns the type specification needed for the given type
-    fileprivate func placeholderArgumentDescription() -> String {
+    private func placeholderArgumentDescription() -> String {
         if self.style.requiresAdditionalValue() {
             return " "+self.label.placeholderArgumentString()
         }
@@ -180,7 +180,7 @@ extension CommandLineArgument : CustomStringConvertible {
     }
     
     /// Returns the type specifications according to the expected type (none for String, <Type> for any other)
-    fileprivate func typeSpecificationDescription() -> String {
+    private func typeSpecificationDescription() -> String {
         if self.expectedType == String.self || !self.style.requiresValue() {
             return ""
         }
@@ -193,7 +193,7 @@ extension CommandLineArgument : CustomStringConvertible {
     }
 
     /// First line of the description: parameters and help
-    fileprivate var firstLineOfDescription : String {
+    private var firstLineOfDescription : String {
         
         let placeholderArgument = self.placeholderArgumentDescription() + self.typeSpecificationDescription()
         let firstColumn = "\(label)" +
@@ -203,7 +203,8 @@ extension CommandLineArgument : CustomStringConvertible {
         
         let needsPadding = firstColumn.characters.count < OutputFirstColumnPadding
         let paddedFirstColumn = needsPadding ?
-            firstColumn.padding(toLength: OutputFirstColumnPadding, withPad: " ", startingAt: 0) :
+            // TODO: remove NSString
+            NSString(string: firstColumn).padding(toLength: OutputFirstColumnPadding, withPad: " ", startingAt: 0) as String:
             firstColumn + " "
         
         if let secondColumn = secondColumn {
@@ -234,7 +235,7 @@ This intermediate class is needed because CommandLineArgument has to have no gen
 to be able to be stored in collections, but the class needs to have a generic parameter
 to be able to initalize and compare
 */
-public class TypedCommandLineArgument<T> : CommandLineArgument where T : InitializableFromString {
+public class TypedCommandLineArgument<T> : CommandLineArgument where T: InitializableFromString {
     
     override func parseValue(_ token: String) throws -> Any? {
         if let parsedValue = T(initializationString: token) {
@@ -246,12 +247,12 @@ public class TypedCommandLineArgument<T> : CommandLineArgument where T : Initial
                     return parsedValue
                 }
                 else {
-                    throw CommandLineArgumentParsingError.notInChoices(argument: self, validChoices: unwrappedChoices.map { $0 as Any}, token: token)
+                    throw CommandLineArgumentParsingError.NotInChoices(argument: self, validChoices: unwrappedChoices.map { $0 as Any}, token: token)
                 }
             }
             return parsedValue
         }
-        return CommandLineArgumentParsingError.invalidType(argument: self, token: token)
+        return CommandLineArgumentParsingError.InvalidType(argument: self, token: token)
     }
     
     override init<Type>(

@@ -44,7 +44,7 @@ public struct ParsingResult {
     /// - returns: the value matching the argument label, only if the value
     /// is of the type expected from the argument
     /// - warning: it will abort execution and print an error if value is not of the required type
-    private func value(for argument: CommandLineArgument) -> Any? {
+    private func valueForArgument(_ argument: CommandLineArgument) -> Any? {
         guard let value = labelsToValues[argument.label.removeFlagPrefix()] else { return nil }
         return (type(of: value) == argument.expectedType) ? value : nil
     }
@@ -52,19 +52,19 @@ public struct ParsingResult {
     /// - returns: the value parsed for the given flag
     /// - warning: it will abort execution and print an error if value is not of the required type
     public func value(_ argument: FlagArgument) -> Bool? {
-        return self.value(for: argument) as? Bool
+        return self.valueForArgument(argument) as? Bool
     }
     
     /// - returns: the value parsed for the given optional argument
     /// - warning: it will abort execution and print an error if value is not of the required type
     public func value<Type>(_ argument: OptionalArgument<Type>) -> Type? {
-        return self.value(for: argument) as? Type
+        return self.valueForArgument(argument) as? Type
     }
     
     /// - returns: the value parsed for the given positional argument
     /// - warning: it will abort execution and print an error if value is not of the required type
     public func value<Type>(_ argument: PositionalArgument<Type>) -> Type? {
-        return self.value(for: argument) as? Type
+        return self.valueForArgument(argument) as? Type
     }
     
     /// - returns: the Bool value for the given label.
@@ -87,10 +87,10 @@ public struct ParsingResult {
     
     /// - returns: a value that is guaranteed to be of the required type if present.
     /// - warning: it will abort execution and print an error if value is not of the required type
-    public func value(_ label: String, type: Any.Type) -> Any? {
+    public func value(_ label: String, type expectedType: Any.Type) -> Any? {
         if let value = self.value(label) {
-            if type(of: value) != type {
-                ErrorReporting.die("value for label '\(label)' has actual type '\(type(of: label))' and not requested type '\(type.self)'")
+            if type(of: value) != expectedType {
+                ErrorReporting.die("value for label '\(label)' has actual type '\(type(of: label))' and not requested type '\(expectedType.self)'")
             }
             return value
         }

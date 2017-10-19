@@ -28,13 +28,13 @@ import Foundation
 public enum ArgumentStyle {
     
     /// A flag-like argument with associated value, e.g. `--number NUMBER`
-    case optional
+    case Optional
     /// A positional argument, e.g. `file`
-    case positional
+    case Positional
     /// A flag-like argument with no associated value, e.g. `--quiet`
-    case flag
+    case Flag
     /// Help argument used to ask for help on the c
-    case help
+    case Help
 }
 
 extension ArgumentStyle {
@@ -42,13 +42,13 @@ extension ArgumentStyle {
     /// Returns whether the style requires a flag-like label
     func hasFlagLikeName() -> Bool {
         switch(self) {
-        case .optional:
+        case .Optional:
             return true
-        case .flag:
+        case .Flag:
             return true
-        case .help:
+        case .Help:
             return true
-        case .positional:
+        case .Positional:
             return false
         }
     }
@@ -56,13 +56,13 @@ extension ArgumentStyle {
     /// Returns whether the style requires an additional value
     func requiresAdditionalValue() -> Bool {
         switch(self) {
-        case .optional:
+        case .Optional:
             return true
-        case .flag:
+        case .Flag:
             return false
-        case .positional:
+        case .Positional:
             return false
-        case .help:
+        case .Help:
             return false
         }
     }
@@ -70,13 +70,13 @@ extension ArgumentStyle {
     /// Returns whether the style requires to specify a value 
     func requiresValue() -> Bool {
         switch(self) {
-        case .optional:
+        case .Optional:
             return true
-        case .flag:
+        case .Flag:
             return false
-        case .positional:
+        case .Positional:
             return true
-        case .help:
+        case .Help:
             return false
         }
     }

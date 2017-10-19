@@ -91,7 +91,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "--number", shortLabel: "--number")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.shortLabelCanNotBeLongFlag{
+        } catch ArgumentInitError.ShortLabelCanNotBeLongFlag{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -113,7 +113,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "-n  ds")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.invalidLabel{
+        } catch ArgumentInitError.InvalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -126,7 +126,7 @@ extension OptionalArgumentTests {
         do {
             _ = try OptionalArgument<Int>(label: "--num", shortLabel: "-n s")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.invalidLabel{
+        } catch ArgumentInitError.InvalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -242,7 +242,7 @@ extension OptionalArgumentTests {
         // when
         do {
             _ = try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -290,7 +290,7 @@ extension OptionalArgumentTests {
         // when
         do {
             _ = try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -341,7 +341,7 @@ extension OptionalArgumentTests {
         // when
         do {
             _ = try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
         } catch {
@@ -358,8 +358,8 @@ extension OptionalArgumentTests {
         
         // when
         do {
-            _ = try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.notInChoices(let argument, let validChoices, let token) {
+            _ =  try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)

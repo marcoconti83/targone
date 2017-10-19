@@ -24,7 +24,7 @@ extension ParsingErrorsTests {
     func testDescriptionOfParameterExpectedAfterTokenError() {
         
         // given
-        let sut = ArgumentParsingError.parameterExpectedAfterToken(previousToken: "foo")
+        let sut = ArgumentParsingError.ParameterExpectedAfterToken(previousToken: "foo")
         
         // when
         let output = "\(sut)"
@@ -38,7 +38,7 @@ extension ParsingErrorsTests {
         
         // given
         let argument = OptionalArgument<Int>("boo")
-        let sut = CommandLineArgumentParsingError.invalidType(argument: argument, token: "bar")
+        let sut = CommandLineArgumentParsingError.InvalidType(argument: argument, token: "bar")
         
         // when
         let output = "\(sut)"
@@ -51,7 +51,7 @@ extension ParsingErrorsTests {
     func testDescriptionOfUnexpectedPositionalArgumentError() {
         
         // given
-        let sut = ArgumentParsingError.unexpectedPositionalArgument(token: "foo")
+        let sut = ArgumentParsingError.UnexpectedPositionalArgument(token: "foo")
         
         // when
         let output = "\(sut)"
@@ -64,7 +64,7 @@ extension ParsingErrorsTests {
     func testDescriptionOfTooFewArgumentsError() {
         
         // given
-        let sut = ArgumentParsingError.tooFewArguments
+        let sut = ArgumentParsingError.TooFewArguments
         
         // when
         let output = "\(sut)"
@@ -84,7 +84,7 @@ extension ParsingErrorsTests {
         // given
         let token = "hello!"
         let argument = PositionalArgument<Double>("foo")
-        let sut = CommandLineArgumentParsingError.invalidType(argument: argument, token: token)
+        let sut = CommandLineArgumentParsingError.InvalidType(argument: argument, token: token)
         
         // when
         let description = sut.description
@@ -99,7 +99,7 @@ extension ParsingErrorsTests {
         let token = "hello!"
         let choices : [Any] = [1,2,3]
         let argument = PositionalArgument<Double>("foo")
-        let sut = CommandLineArgumentParsingError.notInChoices(argument: argument, validChoices: choices, token: token)
+        let sut = CommandLineArgumentParsingError.NotInChoices(argument: argument, validChoices: choices, token: token)
         
         // when
         let description = sut.description
@@ -119,7 +119,7 @@ extension ParsingErrorsTests {
         
         // given
         let label = "speed"
-        let sut = ArgumentParserInitError.moreThanOneArgumentWithSameLabel(label: label)
+        let sut = ArgumentParserInitError.MoreThanOneArgumentWithSameLabel(label: label)
         
         // when
         let description = sut.description

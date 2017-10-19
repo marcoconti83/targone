@@ -55,7 +55,7 @@ public class HelpArgument : CommandLineArgument {
         ) throws {
             try super.init(
                 label: label.addLongFlagPrefix(),
-                style: ArgumentStyle.help,
+                style: ArgumentStyle.Help,
                 shortLabel: shortLabel?.addShortFlagPrefix(),
                 defaultValue: false,
                 help : help

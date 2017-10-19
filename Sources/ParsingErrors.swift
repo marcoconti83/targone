@@ -13,11 +13,11 @@ import Foundation
 public enum ArgumentParserInitError : Error, CustomStringConvertible {
     
     /// There is more than one argument with the same label
-    case moreThanOneArgumentWithSameLabel(label: String)
+    case MoreThanOneArgumentWithSameLabel(label: String)
     
     public var description : String {
         switch(self) {
-        case .moreThanOneArgumentWithSameLabel(let label):
+        case .MoreThanOneArgumentWithSameLabel(let label):
             return "more than one argument with the same label '\(label)'"
         }
     }
@@ -25,19 +25,19 @@ public enum ArgumentParserInitError : Error, CustomStringConvertible {
 
 
 /// Error in parsing argument
-public enum CommandLineArgumentParsingError : Error, CustomStringConvertible {
+public enum CommandLineArgumentParsingError : Error, CustomStringConvertible {    
     
     /// The token does not parse to the expected type
-    case invalidType(argument: CommandLineArgument, token: String)
+    case InvalidType(argument: CommandLineArgument, token: String)
     
     /// The value is not in the list of possible choices
-    case notInChoices(argument: CommandLineArgument, validChoices: [Any], token: String)
+    case NotInChoices(argument: CommandLineArgument, validChoices: [Any], token: String)
     
     public var description : String {
         switch(self) {
-        case .invalidType(let argument, let token):
+        case .InvalidType(let argument, let token):
             return "argument \(argument.label): invalid \(argument.expectedType) value: \(token)"
-        case .notInChoices(let argument, let validChoices, let token):
+        case .NotInChoices(let argument, let validChoices, let token):
             let choices = validChoices.map { "'\($0)'" }.joined(separator: ", ")
             return "argument \(argument.label): '\(token)' is not in the list of possible choices: \(choices)"
         }
@@ -49,21 +49,21 @@ public enum CommandLineArgumentParsingError : Error, CustomStringConvertible {
 public enum ArgumentParsingError : Error, CustomStringConvertible {
     
     /// The previous token requires a parameter, but there is no following valid token
-    case parameterExpectedAfterToken(previousToken: String)
+    case ParameterExpectedAfterToken(previousToken: String)
     
     /// Unexpected positional arguments. No more positional arguments were expected
-    case unexpectedPositionalArgument(token: String)
+    case UnexpectedPositionalArgument(token: String)
     
     /// Too few arguments
-    case tooFewArguments
+    case TooFewArguments
     
     public var description : String {
         switch(self) {
-        case .parameterExpectedAfterToken(let previousToken):
+        case .ParameterExpectedAfterToken(let previousToken):
             return "argument \(previousToken): expected one argument"
-        case .unexpectedPositionalArgument(let token):
+        case .UnexpectedPositionalArgument(let token):
             return "unrecognized parameter: \(token)"
-        case .tooFewArguments:
+        case .TooFewArguments:
             return "too few arguments"
         }
     }

@@ -39,7 +39,7 @@ extension PositionalArgumentTests {
         do {
             _ = try PositionalArgument<Int>(label: "--number")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.labelCanNotBeFlagIfArgumentIsPositional{
+        } catch ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -52,7 +52,7 @@ extension PositionalArgumentTests {
         do {
             _ = try PositionalArgument<Int>(label: "-n")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.labelCanNotBeFlagIfArgumentIsPositional{
+        } catch ArgumentInitError.LabelCanNotBeFlagIfArgumentIsPositional{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -65,7 +65,7 @@ extension PositionalArgumentTests {
         do {
             _ = try PositionalArgument<Int>(label: "-n  ds")
             XCTFail("Did not throw")
-        } catch ArgumentInitError.invalidLabel{
+        } catch ArgumentInitError.InvalidLabel{
             // pass
         } catch let error as Any {
             XCTFail("Unexpected error: \(error)")
@@ -143,7 +143,7 @@ extension PositionalArgumentTests {
         // when
         do {
             _ = try sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -191,8 +191,8 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try _ = sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -243,8 +243,8 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try _ = sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.invalidType(let argument, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.InvalidType(let argument, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)
@@ -262,8 +262,8 @@ extension PositionalArgumentTests {
         
         // when
         do {
-            try _ = sut.parseValue(value)
-        } catch CommandLineArgumentParsingError.notInChoices(let argument, let validChoices, let token) {
+            _ = try sut.parseValue(value)
+        } catch CommandLineArgumentParsingError.NotInChoices(let argument, let validChoices, let token) {
             // then
             XCTAssertEqual(argument, sut)
             XCTAssertEqual(token, value)

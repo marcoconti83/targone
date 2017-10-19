@@ -61,7 +61,7 @@ public class OptionalArgument<T> : TypedCommandLineArgument<T> where T: Initiali
     {
         try super.init(
             label: label.addLongFlagPrefix(),
-            style: ArgumentStyle.optional,
+            style: ArgumentStyle.Optional,
             shortLabel: shortLabel?.addShortFlagPrefix(),
             defaultValue : defaultValue,
             help : help,
