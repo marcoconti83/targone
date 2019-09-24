@@ -67,12 +67,12 @@ extension String {
     func removeFlagPrefix() -> String {
         if(self.isLongFlagStyle()) {
             return String(
-                self[self.characters.index(self.startIndex, offsetBy: 2)...]
+                self[self.index(self.startIndex, offsetBy: 2)...]
             )
         }
         if(self.isShortFlagStyle()) {
             return String(
-                self[self.characters.index(self.startIndex, offsetBy: 1)...]
+                self[self.index(self.startIndex, offsetBy: 1)...]
             )
         }
         return self
@@ -92,7 +92,7 @@ extension String {
     */
     func placeholderArgumentString() -> String {
         var output = self.removeFlagPrefix()
-        output = String(output.characters.map { $0 == "-" ? "_" : $0 })
+        output = String(output.map { $0 == "-" ? "_" : $0 })
         return output.uppercased()
     }
     
@@ -108,7 +108,7 @@ extension String {
     func isValidArgumentName() -> Bool {
         let withoutPrefix = self.removeFlagPrefix()
         
-        if withoutPrefix.characters.count == 0 {
+        if withoutPrefix.count == 0 {
             return false
         }
         

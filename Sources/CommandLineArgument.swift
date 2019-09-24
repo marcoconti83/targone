@@ -124,9 +124,10 @@ open class CommandLineArgument {
 // MARK: - Hashable
 
 extension CommandLineArgument : Hashable {
-    
-    public var hashValue : Int {
-        return self.label.hashValue ^ (self.shortLabel?.hashValue ?? 0)
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.label)
+        hasher.combine(self.shortLabel)
     }
 }
 
@@ -148,7 +149,7 @@ extension CommandLineArgument {
     
     /// All possible labels
     var allLabels: Set<String> {
-        return Set([self.label, self.shortLabel].flatMap { $0 })
+        return Set([self.label, self.shortLabel].compactMap { $0 })
     }
 }
 
@@ -201,7 +202,7 @@ extension CommandLineArgument : CustomStringConvertible {
         placeholderArgument
         let secondColumn = self.help
         
-        let needsPadding = firstColumn.characters.count < OutputFirstColumnPadding
+        let needsPadding = firstColumn.count < OutputFirstColumnPadding
         let paddedFirstColumn = needsPadding ?
             firstColumn.padding(toLength: OutputFirstColumnPadding, withPad: " ", startingAt: 0) :
             firstColumn + " "

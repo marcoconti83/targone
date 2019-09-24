@@ -30,7 +30,7 @@ class ArgumentParserTests: XCTestCase {
     /// Argument label with description
     fileprivate static func argumentDescription(_ label: String, description: String) -> String {
         let Padding = 30
-        let needsPadding = label.characters.count < Padding
+        let needsPadding = label.count < Padding
         let paddedFirstColumn = needsPadding ?
             label.padding(toLength: Padding, withPad: " ", startingAt: 0) :
             label + " "

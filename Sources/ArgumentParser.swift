@@ -226,7 +226,7 @@ extension ArgumentParser : CustomStringConvertible {
     /// Returns a compact description of the arguments, as it is expected to be displayed in the usage string
     fileprivate static func usageArgumentDescription(_ arguments: [CommandLineArgument]) -> String{
         return arguments.reduce("", {
-            var output = $0.characters.count > 0 ? " " : ""
+            var output = $0.count > 0 ? " " : ""
             let label = $1.compactLabelWithExpectedValue
             if $1.isOptional {
                 output += "[\(label)]"
@@ -246,7 +246,7 @@ extension ArgumentParser : CustomStringConvertible {
         let flagsOutput = ArgumentParser.usageArgumentDescription([self.helpArgument] + self.flagAndOptionalArguments)
         let positionalOutput = ArgumentParser.usageArgumentDescription(self.positionalArguments)
         
-        return [usage, flagsOutput, positionalOutput].filter { $0.characters.count > 0 } .joined(separator: " ")
+        return [usage, flagsOutput, positionalOutput].filter { $0.count > 0 } .joined(separator: " ")
     }
 }
 

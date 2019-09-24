@@ -87,7 +87,7 @@ class String_CommandLineArgumentTests: XCTestCase {
         XCTAssertTrue("foo32d1".isValidArgumentName())
     }
     
-    func testThatThatItDoesNotValidaArgumentNames() {
+    func testThatThatItDoesNotValidatesArgumentNames() {
         // first character is not letter or _
         XCTAssertFalse("1erf".isValidArgumentName())
         XCTAssertFalse("---foo".isValidArgumentName())
@@ -99,7 +99,7 @@ class String_CommandLineArgumentTests: XCTestCase {
         
         // contains special chars
         let forbidden = "<>.?/!+=&🏀⛳️#^*,\\$@~:;(){}[]\"'`"
-        for invalidRawChar in forbidden.characters {
+        for invalidRawChar in forbidden {
             let invalidString = String(invalidRawChar)
             XCTAssertFalse("fo\(invalidString)o".isValidArgumentName())
         }
