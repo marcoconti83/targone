@@ -9,11 +9,11 @@ See also [Morione](https://github.com/marcoconti83/morione), A Swift subprocess 
 
 Targone public API is designed keeping in mind ease of use within a script. 
 
-To achieve this, most classes have two ways of being initialized, one with explicit argument names and error reporting (Swift `throw`), and one simplified version that doesn't require the fist label and that does not throw but prints an error and aborts executon instead. See [`OptionalArgument`](https://github.com/marcoconti83/targone/blob/28cf21701b7c92cc744e0e1fd885bfcefa6d9b32/Sources/CommandLineArgument.swift) for an example.
+To achieve this, most classes have two ways of being initialized, one with explicit argument names and error reporting (Swift `throw`), and one simplified version that doesn't require the first label and that does not throw. The second version will instead print an error and aborts execution, following a common pattern in scripts where not all edge cases need to be handled explicitly and abrupt abortion is a valid strategy. See [`OptionalArgument`](https://github.com/marcoconti83/targone/blob/28cf21701b7c92cc744e0e1fd885bfcefa6d9b32/Sources/CommandLineArgument.swift) for an example.
 
 To extract a parsed value (see [`ParsingResult`](https://github.com/marcoconti83/targone/blob/48c4179fc6c9b7ab6510a98971f890b83903219c/Sources/ParsingResult.swift)), one could use a function that return `nil` if the expected type does not match, or a function that prints an error and aborts execution if the type doesn't match.
 
-Aborting execution does not sound very Swift-like; on the other hand, throwing a Swift-error would make even the most simple script full of `try!` and in case of error, print some (at the moment of writing, with Swift 2.1) completely cryptic stack trace that has nothing to do with the error itself. As the goal of Targone is ease of use in a script, we decided not to use `throw`. We are aware that this makes it impossible to test some cases in unit tests.
+Aborting execution does not sound very Swift-like; on the other hand, throwing a Swift-error would make even the most simple script full of `try!` and in case of error, print some completely cryptic stack trace that has nothing to do with the error itself. As the goal of Targone is ease of use in a script, we decided not to use `throw`. We are aware that this makes it impossible to test some cases in unit tests.
 
 The API is documented in the code and tests.
 
